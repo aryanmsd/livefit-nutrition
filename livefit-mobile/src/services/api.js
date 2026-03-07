@@ -8,9 +8,7 @@ Mobile uses your computer IP
 */
 
 const BASE_URL =
-  Platform.OS === "web"
-    ? "http://localhost:4000"
-    : "http://192.168.29.93:4000"; // <-- replace with your IPv4
+  "https://livefit-nutrition.onrender.com"
 
 const API = axios.create({
   baseURL: BASE_URL,
