@@ -605,15 +605,15 @@ app.get("/api/subscription-status", authMiddleware, async (req, res) => {
 app.use('/api', apiRoutes);
 
 // ===== Serve frontend static files =====
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/reset-password.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'passwordreset.html'));
+  res.sendFile(path.join(__dirname, '../public', 'passwordreset.html'));
 });
 
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
   }
 });
 
