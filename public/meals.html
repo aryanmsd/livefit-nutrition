@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LiveFit Meals</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<section class="meals-section">
+
+  <h1 class="page-title">Healthy Meals</h1>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-type="all">All</button>
+    <button class="filter-btn" data-type="veg">Veg</button>
+    <button class="filter-btn" data-type="non-veg">Non Veg</button>
+  </div>
+
+  <!-- MEALS GRID -->
+  <div id="mealsContainer" class="meals-grid"></div>
+
+  <!-- CART SECTION -->
+  <div class="cart-section">
+    <h2>Your Cart</h2>
+
+    <div id="cartItems"></div>
+
+    <button id="placeOrderBtn" class="btn btn-primary">
+      Place Order
+    </button>
+  </div>
+
+</section>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="checkout.js"></script>
+<script src="meals.js"></script>
+</body>
+</html>

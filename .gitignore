@@ -1,8 +1,20 @@
+# Node
 node_modules/
+npm-debug.log
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+local.properties
+*.iml
+
+# iOS
+ios/Pods/
+ios/build/
+
+# Env
 .env
-.env.local
-.env.*.local
-.pycache/
-*.pyc
-__pycache__/
-.DS_Store
+
+# Logs
+*.log

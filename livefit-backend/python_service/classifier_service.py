@@ -7,44 +7,48 @@ import io
 
 app = FastAPI()
 
-# Use rajistics Indian food model
 MODEL_NAME = "rajistics/finetuned-indian-food"
 print(f"🔄 Loading model {MODEL_NAME}...")
 
-# Load processor + model
 processor = AutoImageProcessor.from_pretrained(MODEL_NAME)
 model = AutoModelForImageClassification.from_pretrained(MODEL_NAME)
+
 
 @app.post("/classify")
 async def classify(file: UploadFile = File(...)):
     try:
-        # Read uploaded image
+        # ✅ Correct way to read file
         contents = await file.read()
+
+        # Convert to PIL image
         image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-        # Preprocess
+        # Preprocess image
         inputs = processor(images=image, return_tensors="pt")
 
-        # Forward pass
+        # Run model
         with torch.no_grad():
             outputs = model(**inputs)
-            logits = outputs.logits
 
-        # Compute probabilities
+        logits = outputs.logits
         probs = torch.nn.functional.softmax(logits, dim=-1)[0]
 
-        # Top prediction
-        top_conf, top_idx = torch.max(probs, dim=0)
-        label = model.config.id2label[top_idx.item()]
-        confidence = round(top_conf.item(), 4)
+        # Get top prediction
+        top_prob, top_idx = torch.max(probs, dim=0)
 
-        print(f"✅ Classified as: {label} ({confidence})")
+        label = model.config.id2label[int(top_idx)]
+        confidence = round(float(top_prob), 4)
 
-        return JSONResponse({
+        print(f"✅ Prediction: {label} ({confidence})")
+
+        return {
             "label": label,
             "confidence": confidence
-        })
+        }
 
     except Exception as e:
-        print("❌ Classifier error:", str(e))
-        return JSONResponse({"error": str(e)}, status_code=500)
+        print("❌ Classifier error:", e)
+        return JSONResponse(
+            status_code=500,
+            content={"error": str(e)}
+        )

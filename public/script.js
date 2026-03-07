@@ -9,6 +9,23 @@ let totalFats = 0;
 let authToken = localStorage.getItem("authToken") || null;
 let currentUsername = localStorage.getItem("username") || null;
 
+if (authToken && isTokenExpired(authToken)) {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("username");
+  authToken = null;
+  currentUsername = null;
+}
+
+function isTokenExpired(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  }
+  catch{
+    return true;
+  }
+}
+
 let nutritionChart = null; // Chart.js instance
 
 // ==================== LOAD USER MEALS ON PAGE LOAD ====================
@@ -443,6 +460,7 @@ function renderNutritionChart(mealStats) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio:false,
       plugins: {
         title: { display: true, text: "Nutrient Breakdown by Meal" }
       },
@@ -514,14 +532,81 @@ let isSignup = true;
 function updateAuthUI() {
   const loginBtn = document.getElementById("loginBtn");
   const signupBtn = document.getElementById("signupBtn");
-  
-  if (authToken) {
+  const welcomeUser = document.getElementById("welcomeUser");
+
+  const mealsLink = document.getElementById("mealsLink");
+  const subscriptionLink = document.getElementById("subscriptionLink");
+
+  authToken = localStorage.getItem("authToken");
+  currentUsername = localStorage.getItem("username");
+
+  if (authToken && currentUsername) {
+
     if (loginBtn) loginBtn.style.display = "none";
     if (signupBtn) signupBtn.textContent = "Logout";
+
+    if (welcomeUser) {
+      welcomeUser.textContent = `👋 ${currentUsername}`;
+      welcomeUser.style.display = "inline-block";
+    }
+
+    // ✅ SHOW THESE
+    if (mealsLink) mealsLink.style.display = "inline-block";
+    if (subscriptionLink) subscriptionLink.style.display = "inline-block";
+
   } else {
+
     if (loginBtn) loginBtn.style.display = "inline-block";
     if (signupBtn) signupBtn.textContent = "Sign Up";
+
+    if (welcomeUser) {
+      welcomeUser.textContent = "";
+      welcomeUser.style.display = "none";
+    }
+
+    // ❌ HIDE THESE
+    if (mealsLink) mealsLink.style.display = "none";
+    if (subscriptionLink) subscriptionLink.style.display = "none";
   }
+}
+
+async function checkSubscription() {
+  const token = localStorage.getItem("authToken");
+  if (!token) return;
+
+  const res = await fetch("/api/subscription-status", {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  const data = await res.json();
+
+  const badge = document.getElementById("subscriptionBadge");
+
+  if (!badge) return;
+
+  if (data.plan) {
+    badge.textContent = `Plan: ${data.plan}`;
+  } else {
+    badge.textContent = "Free Plan";
+  }
+}
+
+
+function logoutUser() {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("username");
+
+  authToken = null;
+  currentUsername = null;
+
+  const chatbot = document.getElementById("chatbot");
+  if (chatbot) chatbot.style.display = "none";
+
+  console.log("✅ Logged out");
+
+  updateAuthUI();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -535,29 +620,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const usernameField = document.getElementById("usernameField");
   const emailField = document.getElementById("emailField");
   const passwordField = document.getElementById("passwordField");
+  const forgotBox = document.getElementById("forgotBox");
+  const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+  const backToLogin = document.getElementById("backToLogin");
+  const sendResetLinkBtn = document.getElementById("sendResetLinkBtn");
+  const forgotEmail = document.getElementById("forgotEmail");
+
   
   if (loginBtn) loginBtn.addEventListener("click", () => {
     isSignup = false;
     authTitle.textContent = "Log In";
     usernameField.style.display = "none";
+    toggleAuthMode.textContent = "Don't have an account? Sign Up";
+    forgotPasswordLink.style.display = "block";
+    toggleAuthMode.style.display = "block";
     authModal.style.display = "flex";
   });
   
   if (signupBtn) signupBtn.addEventListener("click", () => {
     if (authToken) {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("username");
-      authToken = null;
-      currentUsername = null;
-      updateAuthUI();
-      console.log("✅ Logged out");
+      logoutUser();
     } else {
       isSignup = true;
       authTitle.textContent = "Sign Up";
       usernameField.style.display = "block";
+      forgotPasswordLink.style.display = "none";
       authModal.style.display = "flex";
     }
   });
+  // ================== FORGOT PASSWORD (MODAL FLOW) ==================
+
+// Open forgot password INSIDE modal
+forgotPasswordLink.addEventListener("click", () => {
+  authForm.style.display = "none";
+  toggleAuthMode.style.display = "none";
+  forgotPasswordLink.style.display = "none";
+
+  authTitle.textContent = "Reset Password";
+  forgotBox.style.display = "block";
+});
+
+// Back to login
+backToLogin.addEventListener("click", () => {
+  forgotBox.style.display = "none";
+
+  authForm.style.display = "block";
+  toggleAuthMode.style.display = "block";
+  forgotPasswordLink.style.display = "block";
+
+  authTitle.textContent = "Log In";
+});
+
+// Send reset link
+sendResetLinkBtn.addEventListener("click", async () => {
+  const email = forgotEmail.value.trim();
+
+  if (!email) {
+    alert("Please enter your email");
+    return;
+  }
+
+  const res = await fetch("/api/auth/forgot-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+
+  const data = await res.json();
+  alert(data.message);
+
+  // Return to login after sending
+  backToLogin.click();
+});
   
   if (closeAuthModal) closeAuthModal.addEventListener("click", () => {
     authModal.style.display = "none";
@@ -568,6 +702,8 @@ document.addEventListener("DOMContentLoaded", () => {
     authTitle.textContent = isSignup ? "Sign Up" : "Log In";
     usernameField.style.display = isSignup ? "block" : "none";
     toggleAuthMode.textContent = isSignup ? "Already have an account? Log In" : "Don't have an account? Sign Up";
+
+    forgotPasswordLink.style.display = isSignup ? "none" : "block";
   });
   
   if (authForm) authForm.addEventListener("submit", async (e) => {
@@ -598,12 +734,31 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       
       const data = await res.json();
+      console.log("📥 Auth response:", data);
       
       if (data.error) {
         alert("Error: " + data.error);
         return;
       }
       
+      if (isSignup) {
+        alert("✅ Signup successful! Please log in.");
+
+        isSignup = false;
+        authTitle.textContent = "Log In";
+        usernameField.style.display = "none";
+        toggleAuthMode.textContent = "Don't have an account? Sign-Up";
+
+        authModal.style.display = "none";
+        authForm.reset()
+
+        return;
+      }
+      if(!data.token) {
+        alert("Login failed. No token received");
+        return;
+      }
+
       authToken = data.token;
       currentUsername = data.username;
       localStorage.setItem("authToken", authToken);
@@ -611,8 +766,11 @@ document.addEventListener("DOMContentLoaded", () => {
       
       console.log("✅ Auth success:", data);
       authModal.style.display = "none";
+
       updateAuthUI();
       loadUserMeals();
+      checkSubscription();
+
     } catch (err) {
       console.error("❌ Auth request failed:", err);
       alert("An error occurred. Please try again.");
@@ -629,5 +787,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateAuthUI();
-  if (authToken) loadUserMeals();
+  
+  if (authToken) {
+    checkSubscription();
+    loadUserMeals();
+  }
 });
+

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LiveFit</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Cyberpunk Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+</head>
+<body>
+
+<div id="particles-js"></div>
+<div class="scanlines"></div>
+
+<header class="main-header">
+  <div class="logo">
+    <i class="fas fa-heartbeat"></i>
+    <span>LiveFit</span>
+  </div>
+
+  <nav class="nav-links">
+    <a href="#dashboard" class="active">Dashboard</a>
+    <a href="#tracker">Meal Tracker</a>
+    <a href="#nutrition">Nutrition</a>
+    <a href="#profile">Profile</a>
+    <a href="meals.html" id="mealsLink" style="display:none;">Meals</a>
+    <a href="subscription.html" id="subscriptionLink" style="display:none;">Subscription</a>
+  </nav>
+
+  <div class="auth-buttons">
+    <span id="welcomeUser" class="welcome-user" style="display:none;"></span>
+    <span id="subscriptionBadge" class="subscription-badge"></span>
+    <button id="loginBtn" class="btn">Log In</button>
+    <button id="signupBtn" class="btn btn-primary">Sign Up</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-image">
+      <img src="https://static.vecteezy.com/system/resources/previews/021/534/411/non_2x/healthy-food-on-old-wooden-background-concept-of-proper-nutrition-top-view-flat-lay-photo.jpg">
+    </div>
+    <div class="hero-content">
+      <h1>Track Your Nutrition</h1>
+      <p>Cyber-enhanced nutrition tracking powered by AI</p>
+      <button class="btn btn-primary btn-lg">Get Started</button>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="dashboard">
+    <h2>Your Daily Summary</h2>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Calories</div>
+        <div class="stat-progress"><div class="progress-bar"></div></div>
+        <div class="stat-goal">Goal: 2000</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value">0g</div>
+        <div class="stat-label">Protein</div>
+        <div class="stat-progress"><div class="progress-bar"></div></div>
+        <div class="stat-goal">Goal: 120g</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value">0g</div>
+        <div class="stat-label">Carbs</div>
+        <div class="stat-progress"><div class="progress-bar"></div></div>
+        <div class="stat-goal">Goal: 300g</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-value">0g</div>
+        <div class="stat-label">Fats</div>
+        <div class="stat-progress"><div class="progress-bar"></div></div>
+        <div class="stat-goal">Goal: 90g</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEAL TRACKER -->
+  <section id="tracker" class="meal-tracker">
+    <h2>Today's Meals</h2>
+
+    <div class="meal-cards">
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <h3>Breakfast</h3>
+          <span class="meal-calories">0 cal</span>
+        </div>
+        <ul class="food-items"></ul>
+        <button class="btn-add-food">+ Add Food</button>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <h3>Lunch</h3>
+          <span class="meal-calories">0 cal</span>
+        </div>
+        <ul class="food-items"></ul>
+        <button class="btn-add-food">+ Add Food</button>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <h3>Dinner</h3>
+          <span class="meal-calories">0 cal</span>
+        </div>
+        <ul class="food-items"></ul>
+        <button class="btn-add-food">+ Add Food</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NUTRITION -->
+  <section id="nutrition" class="nutrition-insights">
+    <h2>Nutrition Insights</h2>
+
+    <div class="insights-container">
+      <div class="chart-container">
+        <canvas id="nutritionChart"></canvas>
+      </div>
+
+      <div class="nutrition-tips">
+        <h3>AI Tips</h3>
+        <ul>
+          <li>Optimize protein intake</li>
+          <li>Increase fiber</li>
+          <li>Hydration boost recommended</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-bottom">
+    © 2025 LiveFit — Cyber Nutrition Engine
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+<script src="chatbot.js" defer></script>
+
+<!-- ========== AUTH MODAL ========== -->
+<div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+  
+      <span id="closeAuthModal" class="close-btn">×</span>
+  
+      <h2 id="authTitle">Log In</h2>
+  
+      <!-- LOGIN / SIGNUP FORM -->
+      <form id="authForm">
+        <input type="text" id="usernameField" placeholder="Username" />
+        <input type="email" id="emailField" placeholder="Email" required />
+        <input type="password" id="passwordField" placeholder="Password" required />
+  
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+  
+      <!-- FORGOT PASSWORD FORM (HIDDEN INITIALLY) -->
+      <div id="forgotBox" style="display:none;">
+        <input
+          type="email"
+          id="forgotEmail"
+          placeholder="Enter your registered email"
+        />
+        <button id="sendResetLinkBtn" class="btn btn-outline">
+          Send Reset Link
+        </button>
+  
+        <p id="backToLogin" class="link-text">
+          ← Back to Login
+        </p>
+      </div>
+  
+      <!-- TOGGLE LINKS -->
+      <p id="toggleAuthMode" class="link-text">
+        Don't have an account? Sign Up
+      </p>
+  
+      <p id="forgotPasswordLink" class="link-text">
+        Forgot Password?
+      </p>
+    </div>
+  </div>
+
+  <!-- Chatbot Toggle Button -->
+<div id="chatbot-toggle">
+  🤖
+</div>
+
+<!-- Chatbot Window -->
+<div id="chatbot">
+  <div class="chatbot-header">
+    <span>LiveFit AI</span>
+    <button id="close-chatbot">×</button>
+  </div>
+
+  <div class="chatbot-messages" id="chat-messages"></div>
+
+  <div class="chatbot-input">
+    <input
+      type="text"
+      id="chat-input"
+      placeholder="Ask about nutrition..."
+    />
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+</body>
+</html>

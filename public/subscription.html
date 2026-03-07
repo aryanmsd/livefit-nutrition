@@ -1,0 +1,118 @@
+<link rel="stylesheet" href="styles.css">
+<section class="subscription-page">
+    <h1>Choose Your Plan</h1>
+  
+    <div class="pricing-container">
+  
+      <div class="plan-card">
+        <h2>Free</h2>
+        <p class="price">₹0<span>/month</span></p>
+        <ul>
+          <li>✔ Meal Tracking</li>
+          <li>✔ Basic Nutrition Insights</li>
+          <li>✖ AI Smart Recommendations</li>
+        </ul>
+        <button class="btn">Current Plan</button>
+      </div>
+  
+      <div class="plan-card popular">
+        <div class="badge">Most Popular</div>
+        <h2>Pro</h2>
+        <p class="price">₹499<span>/month</span></p>
+        <ul>
+          <li>✔ Everything in Free</li>
+          <li>✔ AI Auto Meal Planner</li>
+          <li>✔ Personalized Macros</li>
+        </ul>
+        <button onclick="subscribe('pro')" class="btn btn-primary">Upgrade</button>
+      </div>
+  
+      <div class="plan-card">
+        <h2>Elite</h2>
+        <p class="price">₹999<span>/month</span></p>
+        <ul>
+          <li>✔ Everything in Pro</li>
+          <li>✔ 10% Discount on Meals</li>
+          <li>✔ Priority Support</li>
+        </ul>
+        <button onclick="subscribe('elite')" class="btn btn-primary">Upgrade</button>
+      </div>
+  
+    </div>
+  </section>  
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  async function subscribe(plan){
+    const token = localStorage.getItem("authToken");
+    let amount = 0;
+    if(plan === "pro") amount = 499;
+    if(plan === "elite") amount = 999;
+  
+    const res = await fetch("/api/payment/create-subscription-order",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+token
+      },
+      body:JSON.stringify({plan, amount})
+    });
+  
+    const data = await res.json();
+  
+    const options = {
+  
+      key: data.key,
+      amount: data.order.amount,
+      currency: "INR",
+      name: "LiveFit Subscription",
+      description: plan.toUpperCase()+" Plan",
+      order_id: data.order.id,
+  
+      handler: async function(response){
+        await fetch("/api/subscribe",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer "+token
+          },
+          body:JSON.stringify({plan})
+        });
+  
+        alert("Subscription Activated!");
+        location.reload();
+      }
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+  </script>
+  <script>
+
+    async function loadPlan(){
+    
+      const token = localStorage.getItem("authToken");
+    
+      const res = await fetch("/api/subscription-status",{
+        headers:{
+          "Authorization":"Bearer "+token
+        }
+      });
+    
+      const data = await res.json();
+    
+      if(data.plan){
+        document.querySelectorAll(".btn").forEach(btn=>{
+          if(btn.innerText === "Current Plan") return;
+    
+          if(btn.getAttribute("onclick")?.includes(data.plan)){
+            btn.innerText = "Current Plan";
+            btn.disabled = true;
+          }
+        });
+      }
+    
+    }
+    
+    loadPlan();
+    
+    </script>
