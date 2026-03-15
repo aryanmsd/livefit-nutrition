@@ -22,6 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/invoices", express.static("invoices"));
 
+app.get("/wake", (req, res) => {
+  res.status(200).send("Server awake");
+});
 // ===== Email Transporter (Forgot Password) =====
 const transporter = nodemailer.createTransport({
   service: "gmail",
