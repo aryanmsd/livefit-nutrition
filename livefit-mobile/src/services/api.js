@@ -8,7 +8,7 @@ Mobile uses your computer IP
 */
 
 const BASE_URL =
-  "https://livefit-nutrition.onrender.com"
+  "https://livefit-backend.onrender.com"
 
 const API = axios.create({
   baseURL: BASE_URL,
