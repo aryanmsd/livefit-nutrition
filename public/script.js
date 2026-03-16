@@ -1,4 +1,5 @@
 // ==================== GLOBALS ====================
+const API_BASE = "https://livefit-backend.onrender.com";
 const meals = document.querySelectorAll('.meal-card');
 
 let totalCalories = 0;
@@ -36,7 +37,7 @@ async function loadUserMeals() {
   }
   
   try {
-    const res = await fetch("/api/food/my", {
+    const res = await fetch(API_BASE + "/api/food/my", {
       headers: {
         "Authorization": "Bearer " + authToken
       }
@@ -97,7 +98,7 @@ async function fetchNutritionByNameOrImage({ name, file }) {
             fd.append('image', file, file.name);
             if (name) fd.append('name', name);
             
-            const resp = await fetch('/api/identify', { 
+            const resp = await fetch(API_BASE + '/api/identify', { 
                 method: 'POST', 
                 body: fd 
             });
@@ -107,7 +108,7 @@ async function fetchNutritionByNameOrImage({ name, file }) {
             return result;
         } else {
             console.log('📤 Searching for food by name...');
-            const resp = await fetch('/api/identify', {
+            const resp = await fetch(API_BASE + '/api/identify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name })
@@ -315,7 +316,7 @@ async function saveFoodToDB(mealType, name, nutrients) {
   }
   
   try {
-    const res = await fetch("/api/food/add", {
+    const res = await fetch(API_BASE + "/api/food/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -361,7 +362,7 @@ async function deleteFoodFromDB(foodId) {
   }
   
   try {
-    const res = await fetch(`/api/food/${foodId}`, {
+    const res = await fetch(API_BASE + `/api/food/${foodId}`, {
       method: "DELETE",
       headers: {
         "Authorization": "Bearer " + authToken
@@ -529,7 +530,6 @@ function updateDashboard() {
 
   // ✅ Update nutrition chart
   renderNutritionChart(mealStats);
-  updateNutritionTips(totalCalories, totalProtein, totalCarbs, totalFats);
 }
 
 // ==================== AUTH HANDLING ====================
@@ -541,7 +541,7 @@ async function loadUserCoins() {
 
   if (!token) return;
 
-  const res = await fetch("http://localhost:4000/api/coins", {
+  const res = await fetch(API_BASE + "/api/coins", {
     method: "GET",
     headers: {
       "Authorization": "Bearer " + token,
@@ -603,7 +603,7 @@ async function checkSubscription() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
-  const res = await fetch("/api/subscription-status", {
+  const res = await fetch(API_BASE + "/api/subscription-status", {
     headers: {
       "Authorization": `Bearer ${token}`
     }
@@ -709,7 +709,7 @@ sendResetLinkBtn.addEventListener("click", async () => {
     return;
   }
 
-  const res = await fetch("/api/auth/forgot-password", {
+  const res = await fetch(API_BASE + "/api/auth/forgot-password", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email })
@@ -753,7 +753,7 @@ sendResetLinkBtn.addEventListener("click", async () => {
     }
     
     try {
-      const endpoint = isSignup ? "/api/auth/signup" : "/api/auth/login";
+      const endpoint = isSignup ? API_BASE + "/api/auth/signup" : API_BASE + "/api/auth/login";
       const body = isSignup ? { username, email, password } : { email, password };
       
       const res = await fetch(endpoint, {
