@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — About Us</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 48px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;font-size:1.1rem;margin-top:12px;max-width:600px;margin-left:auto;margin-right:auto;}
+    .content-wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+    .section-block{background:#0f1e35;border:1px solid #1a3a5c;border-radius:16px;padding:32px;margin-bottom:24px;}
+    .section-block h2{font-family:'Orbitron',sans-serif;font-size:1.1rem;color:#00e5ff;margin-bottom:14px;}
+    .section-block p{color:#b0c8e0;font-size:1rem;line-height:1.7;}
+    .team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;margin-top:20px;}
+    .team-card{background:#0a1525;border:1px solid #1a3a5c;border-radius:14px;padding:24px;text-align:center;}
+    .team-card .avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#00e5ff22,#7c3aed22);border:2px solid #00e5ff;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 14px;}
+    .team-card h3{font-family:'Orbitron',sans-serif;font-size:0.85rem;color:#e2f0ff;margin-bottom:4px;}
+    .team-card p{color:#5a7a9a;font-size:0.82rem;}
+    .stats-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:20px;}
+    .stat-pill{flex:1;min-width:140px;background:#0a1525;border:1px solid #1a3a5c;border-radius:12px;padding:20px;text-align:center;}
+    .stat-pill .num{font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;color:#00e5ff;}
+    .stat-pill .lbl{color:#5a7a9a;font-size:0.85rem;margin-top:4px;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="meals.html">Meals</a>
+    <a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a>
+    <a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<main>
+  <div class="page-hero">
+    <h1>About LiveFit</h1>
+    <p>We're on a mission to make nutrition tracking effortless, intelligent, and actually enjoyable.</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="section-block">
+      <h2>Our Story</h2>
+      <p>LiveFit was born out of frustration with complicated, joyless nutrition apps. We believed tracking your food should feel empowering, not punishing. Founded in 2024, we set out to build a platform that combines AI-powered food identification, real-time nutrition insights, and a rewarding experience — all in one place.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>Our Mission</h2>
+      <p>To democratise personalised nutrition — giving every person the tools, knowledge, and motivation to eat well and feel great, regardless of their fitness level or background. We use cutting-edge AI to identify food from photos, track macros in real time, and deliver actionable insights that actually fit your life.</p>
+    </div>
+
+    <div class="section-block">
+      <h2>By the Numbers</h2>
+      <div class="stats-row">
+        <div class="stat-pill"><div class="num">10K+</div><div class="lbl">Active Users</div></div>
+        <div class="stat-pill"><div class="num">500K+</div><div class="lbl">Meals Tracked</div></div>
+        <div class="stat-pill"><div class="num">98%</div><div class="lbl">AI Accuracy</div></div>
+        <div class="stat-pill"><div class="num">4.8★</div><div class="lbl">User Rating</div></div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h2>Our Values</h2>
+      <p><strong style="color:#00e5ff;">Transparency</strong> — We show you exactly what's in your food.<br><br>
+      <strong style="color:#00e5ff;">Simplicity</strong> — Powerful features, zero complexity.<br><br>
+      <strong style="color:#00e5ff;">Motivation</strong> — Our coins and rewards system keeps you going.<br><br>
+      <strong style="color:#00e5ff;">Privacy</strong> — Your health data belongs to you. Always.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>
+  (function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();
+  function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}
+</script>
+</body>
+</html>

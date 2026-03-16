@@ -1,9 +1,12 @@
+// src/theme/colors.ts
 export const colors = {
-  background: "#0f172a",
-  card: "#1e293b",
-  primary: "#00f5d4",
-  secondary: "#0ea5e9",
-  text: "#ffffff",
-  muted: "#94a3b8",
-  danger: "#ef4444"
+  background: "#070d1a",
+  card:        "#0f1e35",
+  cardBorder:  "#1a3a5c",
+  primary:     "#00e5ff",
+  secondary:   "#ff4d6d",
+  accent:      "#7c3aed",
+  success:     "#22c55e",
+  text:        "#e2f0ff",
+  muted:       "#5a7a9a",
 };

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>LiveFit — Cart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    :root {
+      --primary:#00e5ff; --secondary:#ff4d6d;
+      --bg:#070d1a; --card:#0f1e35; --border:#1a3a5c;
+      --text:#e2f0ff; --muted:#5a7a9a; --success:#22c55e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;}
+
+    .main-header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;height:60px;position:sticky;top:0;z-index:100;
+      backdrop-filter:blur(10px);border-bottom:1px solid rgba(0,229,255,0.1);gap:16px;
+    }
+    .main-header .logo{flex-shrink:0;display:flex;align-items:center;gap:8px;}
+    .main-header .logo span{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--primary);}
+    .main-header .logo i{color:var(--secondary);}
+    .nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;flex-wrap:nowrap;}
+    .nav-links a{padding:5px 10px;font-size:0.78rem;white-space:nowrap;text-decoration:none;color:var(--muted);transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--primary);}
+    .header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .coins-box{
+      font-family:'Orbitron',sans-serif;font-size:0.75rem;color:var(--primary);
+      background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);
+      border-radius:20px;padding:5px 12px;white-space:nowrap;
+    }
+    .welcome-user{font-size:0.8rem;white-space:nowrap;color:var(--text);}
+    .btn-logout{
+      font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;
+      padding:6px 14px;border-radius:8px;border:none;cursor:pointer;
+      background:var(--secondary);color:#fff;
+    }
+
+    .cart-wrap{max-width:700px;margin:0 auto;padding:40px 20px 60px;}
+    .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+    .page-header h1{
+      font-family:'Orbitron',sans-serif;font-size:1.8rem;font-weight:900;
+      background:linear-gradient(135deg,var(--primary),#00ffcc);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .clear-btn{
+      font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;
+      padding:8px 16px;border-radius:20px;border:1px solid var(--secondary);
+      background:rgba(255,77,109,0.08);color:var(--secondary);cursor:pointer;transition:background 0.2s;
+    }
+    .clear-btn:hover{background:rgba(255,77,109,0.18);}
+
+    .cart-card{
+      background:var(--card);border:1px solid var(--border);border-radius:14px;
+      padding:16px 20px;margin-bottom:10px;
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .cart-item-name{font-weight:700;font-size:1rem;color:var(--text);}
+    .cart-item-meta{color:var(--muted);font-size:0.88rem;margin-top:3px;}
+    .cart-item-price{font-family:'Orbitron',sans-serif;color:var(--primary);font-size:1rem;font-weight:700;flex-shrink:0;}
+
+    .empty-state{text-align:center;padding:80px 20px;}
+    .empty-state .icon{font-size:4rem;margin-bottom:16px;}
+    .empty-state h2{font-family:'Orbitron',sans-serif;color:var(--text);margin-bottom:10px;}
+    .empty-state p{color:var(--muted);}
+    .empty-state a{color:var(--primary);}
+
+    .section-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:20px 22px;margin-bottom:14px;
+    }
+    .section-label{
+      font-family:'Orbitron',sans-serif;font-size:0.66rem;
+      letter-spacing:2px;color:var(--muted);margin-bottom:14px;text-transform:uppercase;
+    }
+
+    .code-row{display:flex;gap:10px;}
+    .code-input{
+      flex:1;background:var(--bg);border:1px solid var(--border);border-radius:10px;
+      padding:12px 16px;color:var(--primary);font-family:'Orbitron',sans-serif;
+      font-size:0.9rem;letter-spacing:3px;text-transform:uppercase;outline:none;
+      transition:border-color 0.2s;
+    }
+    .code-input:focus{border-color:var(--primary);}
+    .code-input::placeholder{color:var(--muted);letter-spacing:1px;font-size:0.78rem;font-family:'Rajdhani',sans-serif;}
+    .apply-btn{
+      font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;
+      padding:12px 20px;border-radius:10px;border:none;
+      background:var(--primary);color:#000;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;
+    }
+    .apply-btn:disabled{opacity:0.4;cursor:not-allowed;}
+    .apply-btn:hover:not(:disabled){opacity:0.85;}
+
+    .code-applied{
+      background:rgba(34,197,94,0.08);border:1px solid var(--success);
+      border-radius:10px;padding:14px 16px;margin-top:10px;
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .code-applied-text{color:var(--success);font-weight:700;font-size:0.95rem;}
+    .code-applied-sub{color:var(--muted);font-size:0.82rem;margin-top:2px;}
+    .remove-code-btn{
+      background:none;border:none;color:var(--secondary);
+      font-family:'Rajdhani',sans-serif;font-size:0.92rem;font-weight:700;
+      cursor:pointer;white-space:nowrap;padding-left:12px;
+    }
+
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:1rem;}
+    .summary-row .lbl{color:var(--muted);}
+    .summary-row .val{color:var(--text);}
+    .discount-row .lbl,.discount-row .val{color:var(--success);font-weight:700;}
+    .total-row{border-top:1px solid var(--border);margin-top:8px;padding-top:14px;font-family:'Orbitron',sans-serif;}
+    .total-row .lbl{color:var(--text);font-size:1rem;}
+    .total-row .val{color:var(--primary);font-size:1.2rem;font-weight:900;}
+
+    .pay-btn{
+      width:100%;margin-top:18px;font-family:'Orbitron',sans-serif;font-size:0.88rem;
+      font-weight:700;padding:16px;border-radius:14px;border:none;
+      background:var(--primary);color:#000;cursor:pointer;letter-spacing:0.5px;transition:opacity 0.2s;
+    }
+    .pay-btn:hover:not(:disabled){opacity:0.88;}
+    .pay-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+    .toast{
+      position:fixed;bottom:28px;left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:#0d2b1f;border:1px solid var(--success);color:var(--success);
+      font-family:'Orbitron',sans-serif;font-size:0.78rem;
+      padding:11px 24px;border-radius:40px;z-index:9999;opacity:0;
+      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s;white-space:nowrap;
+    }
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+    #loginPrompt{display:none;text-align:center;padding:80px 20px;}
+    #loginPrompt h2{font-family:'Orbitron',sans-serif;color:var(--primary);margin-bottom:12px;}
+    #loginPrompt p{color:var(--muted);}
+    #loginPrompt a{color:var(--primary);}
+  </style>
+</head>
+<body>
+
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="meals.html">Meals</a>
+    <a href="cart.html" class="active">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a>
+    <a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" class="welcome-user" style="display:none;"></span>
+    <button id="logoutBtn" class="btn-logout" style="display:none;">Logout</button>
+  </div>
+</header>
+
+<div id="loginPrompt">
+  <h2>Login Required</h2>
+  <p>Please <a href="index.html">log in</a> to view your cart.</p>
+</div>
+
+<div class="cart-wrap" id="cartContent" style="display:none;">
+
+  <div class="page-header">
+    <h1>🛒 Your Cart</h1>
+    <button class="clear-btn" id="clearCartBtn" onclick="clearCart()" style="display:none;">
+      🗑 Clear Cart
+    </button>
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="icon">🛒</div>
+    <h2>Cart is Empty</h2>
+    <p>Add meals from the <a href="meals.html">Meals</a> page</p>
+  </div>
+
+  <!-- Reward code section -->
+  <div class="section-card" id="codeSection" style="display:none;">
+    <div class="section-label">Apply Reward Code</div>
+
+    <!-- Input row (shown by default) -->
+    <div id="codeInputRow" class="code-row">
+      <input class="code-input" id="codeInput" placeholder="e.g. LF-A3X9K2"
+             oninput="this.value=this.value.toUpperCase()" />
+      <button class="apply-btn" id="applyBtn" onclick="applyCode()">Apply</button>
+    </div>
+
+    <!-- Applied row (hidden until code validated) -->
+    <div class="code-applied" id="codeApplied" style="display:none;">
+      <div>
+        <div class="code-applied-text" id="codeAppliedText"></div>
+        <div class="code-applied-sub"  id="codeAppliedSub"></div>
+      </div>
+      <button class="remove-code-btn" onclick="removeCode()">✕ Remove</button>
+    </div>
+  </div>
+
+  <!-- Order summary -->
+  <div class="section-card" id="summarySection" style="display:none;">
+    <div class="section-label">Order Summary</div>
+
+    <div class="summary-row">
+      <span class="lbl">Subtotal</span>
+      <span class="val" id="subtotalDisplay">₹0</span>
+    </div>
+
+    <!-- Discount row — hidden unless discount > 0 -->
+    <div class="summary-row discount-row" id="discountRow" style="display:none;">
+      <span class="lbl" id="discountLabel">Discount</span>
+      <span class="val" id="discountDisplay"></span>
+    </div>
+
+    <div class="summary-row total-row">
+      <span class="lbl">Total</span>
+      <span class="val" id="totalDisplay">₹0</span>
+    </div>
+
+    <button class="pay-btn" id="payBtn" onclick="startPayment()">
+      Pay & Place Order →
+    </button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const token = localStorage.getItem("authToken");
+  let cartItems   = [];
+  let appliedCode = null; // { code, rewardTitle, discountPct }
+
+  // ─── INIT ───
+  async function init() {
+    if (!token) {
+      document.getElementById("loginPrompt").style.display = "block";
+      return;
+    }
+    document.getElementById("cartContent").style.display   = "block";
+    document.getElementById("welcomeUser").textContent     = "👋 " + (localStorage.getItem("username") || "");
+    document.getElementById("welcomeUser").style.display   = "inline-block";
+    document.getElementById("logoutBtn").style.display     = "inline-block";
+    await Promise.all([loadCart(), loadCoins()]);
+  }
+
+  async function loadCoins() {
+    try {
+      const res  = await fetch("/api/coins", { headers: authH() });
+      const data = await res.json();
+      document.getElementById("coinsDisplay").textContent = data.coins || 0;
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadCart() {
+    try {
+      const res  = await fetch("/api/cart", { headers: authH() });
+      const data = await res.json();
+      cartItems  = Array.isArray(data.items) ? data.items : [];
+    } catch(e) { console.error(e); cartItems = []; }
+    renderCart();
+  }
+
+  function renderCart() {
+    const container      = document.getElementById("cartItems");
+    const emptyState     = document.getElementById("emptyState");
+    const codeSection    = document.getElementById("codeSection");
+    const summarySection = document.getElementById("summarySection");
+    const clearBtn       = document.getElementById("clearCartBtn");
+
+    container.innerHTML = "";
+
+    if (cartItems.length === 0) {
+      emptyState.style.display     = "block";
+      codeSection.style.display    = "none";
+      summarySection.style.display = "none";
+      clearBtn.style.display       = "none";
+      return;
+    }
+
+    emptyState.style.display     = "none";
+    codeSection.style.display    = "block";
+    summarySection.style.display = "block";
+    clearBtn.style.display       = "inline-block";
+
+    cartItems.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "cart-card";
+      div.innerHTML = `
+        <div>
+          <div class="cart-item-name">${item.mealId.name}</div>
+          <div class="cart-item-meta">₹${item.mealId.price} × ${item.quantity}</div>
+        </div>
+        <div class="cart-item-price">₹${item.mealId.price * item.quantity}</div>`;
+      container.appendChild(div);
+    });
+
+    updateSummary();
+  }
+
+  // ─── SUMMARY ───
+  function updateSummary() {
+    const raw        = cartItems.reduce((s, i) => s + (i.mealId.price * i.quantity), 0);
+    const discountPct = appliedCode ? Number(appliedCode.discountPct) : 0;
+    const discountAmt = discountPct > 0 ? Math.round(raw * discountPct / 100) : 0;
+    const final       = raw - discountAmt;
+
+    document.getElementById("subtotalDisplay").textContent = "₹" + raw;
+    document.getElementById("totalDisplay").textContent    = "₹" + final;
+    document.getElementById("payBtn").textContent          = `Pay ₹${final} & Place Order →`;
+
+    const discountRow = document.getElementById("discountRow");
+    if (discountAmt > 0) {
+      discountRow.style.display = "flex";
+      document.getElementById("discountLabel").textContent   = `Discount (${discountPct}% off)`;
+      document.getElementById("discountDisplay").textContent = `− ₹${discountAmt}`;
+    } else {
+      discountRow.style.display = "none";
+    }
+  }
+
+  // ─── APPLY CODE ───
+  async function applyCode() {
+    const code = document.getElementById("codeInput").value.trim();
+    if (!code) { showToast("Enter a reward code first"); return; }
+
+    const applyBtn = document.getElementById("applyBtn");
+    applyBtn.disabled    = true;
+    applyBtn.textContent = "...";
+
+    try {
+      const res  = await fetch("/api/validate-code", {
+        method: "POST", headers: authH(),
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast("❌ " + (data.error || "Invalid code"));
+        return;
+      }
+
+      // Store as numbers to avoid string concatenation bugs
+      appliedCode = {
+        code:        data.code,
+        rewardTitle: data.rewardTitle,
+        discountPct: Number(data.discountPct)
+      };
+
+      // Switch UI to applied state
+      document.getElementById("codeInputRow").style.display = "none";
+      document.getElementById("codeApplied").style.display  = "flex";
+      document.getElementById("codeAppliedText").textContent =
+        `✓ ${data.code}` + (appliedCode.discountPct > 0 ? `  (${appliedCode.discountPct}% off)` : "");
+      document.getElementById("codeAppliedSub").textContent = data.rewardTitle;
+
+      updateSummary();
+
+      showToast(appliedCode.discountPct > 0
+        ? `🎉 ${appliedCode.discountPct}% discount applied!`
+        : `✅ "${data.rewardTitle}" applied!`);
+
+    } catch(e) {
+      console.error(e);
+      showToast("❌ Failed to validate code");
+    } finally {
+      applyBtn.disabled    = false;
+      applyBtn.textContent = "Apply";
+    }
+  }
+
+  // ─── REMOVE CODE ───
+  function removeCode() {
+    appliedCode = null;
+    document.getElementById("codeInput").value             = "";
+    document.getElementById("codeInputRow").style.display  = "flex";
+    document.getElementById("codeApplied").style.display   = "none";
+    updateSummary();
+  }
+
+  // ─── CLEAR CART ───
+  async function clearCart() {
+    if (!confirm("Remove all items from your cart?")) return;
+    try {
+      await fetch("/api/cart/clear", { method: "DELETE", headers: authH() });
+      cartItems   = [];
+      appliedCode = null;
+      removeCode();
+      renderCart();
+      showToast("Cart cleared");
+    } catch(e) { alert("Failed to clear cart"); }
+  }
+
+  // ─── PAYMENT ───
+  async function startPayment() {
+    const raw         = cartItems.reduce((s, i) => s + (i.mealId.price * i.quantity), 0);
+    const discountPct = appliedCode ? Number(appliedCode.discountPct) : 0;
+    const discountAmt = discountPct > 0 ? Math.round(raw * discountPct / 100) : 0;
+    const final       = raw - discountAmt;
+
+    const payBtn = document.getElementById("payBtn");
+    payBtn.disabled    = true;
+    payBtn.textContent = "Initializing...";
+
+    try {
+      const res  = await fetch("/api/payment/create-order", {
+        method: "POST", headers: authH(),
+        body: JSON.stringify({
+          amount:       final,
+          discountCode: appliedCode ? appliedCode.code : null
+        })
+      });
+      const data = await res.json();
+
+      if (data.error) { alert(data.error); return; }
+
+      const options = {
+        key:         data.key,
+        amount:      data.order.amount,
+        currency:    "INR",
+        name:        "LiveFit",
+        description: "Meal Order",
+        order_id:    data.order.id,
+        handler: async function(response) {
+          const orderRes  = await fetch("/api/order/place", { method: "POST", headers: authH() });
+          const orderData = await orderRes.json();
+          appliedCode = null;
+          showToast("🎉 Order placed! +20 🪙");
+          await Promise.all([loadCart(), loadCoins()]);
+          if (orderData.invoice) {
+            setTimeout(() => window.open(orderData.invoice, "_blank"), 1200);
+          }
+        }
+      };
+
+      new Razorpay(options).open();
+
+    } catch(e) {
+      console.error(e);
+      alert("Payment failed. Try again.");
+    } finally {
+      payBtn.disabled    = false;
+      const raw2 = cartItems.reduce((s,i) => s+(i.mealId.price*i.quantity),0);
+      payBtn.textContent = `Pay ₹${raw2 - (appliedCode ? Math.round(raw2 * Number(appliedCode.discountPct) / 100) : 0)} & Place Order →`;
+    }
+  }
+
+  function authH() {
+    return { "Authorization": "Bearer " + token, "Content-Type": "application/json" };
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 3500);
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("username");
+    window.location.href = "index.html";
+  });
+
+  init();
+</script>
+</body>
+</html>

@@ -341,12 +341,17 @@ async function saveFoodToDB(mealType, name, nutrients) {
 
 // ==================== SAVE AND UPDATE UI ====================
 async function saveFoodAndUpdateUI(mealCard, foodName, nutrients) {
+
   const mealType = mealCard.querySelector("h3").textContent;
-  
+
   const savedFood = await saveFoodToDB(mealType, foodName, nutrients);
-  
+
   const foodId = savedFood ? savedFood._id : null;
+
   addFoodItemToUI(mealCard, foodName, nutrients, foodId);
+
+  await loadUserCoins();   // ⭐ wait for server to update coins first
+
 }
 
 // ==================== DELETE FOOD FROM DATABASE ====================
@@ -524,10 +529,34 @@ function updateDashboard() {
 
   // ✅ Update nutrition chart
   renderNutritionChart(mealStats);
+  updateNutritionTips(totalCalories, totalProtein, totalCarbs, totalFats);
 }
 
 // ==================== AUTH HANDLING ====================
 let isSignup = true;
+
+async function loadUserCoins() {
+
+  const token = localStorage.getItem("authToken");
+
+  if (!token) return;
+
+  const res = await fetch("http://localhost:4000/api/coins", {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json"
+    }
+  });
+
+  const data = await res.json();
+
+  const coinDisplay = document.getElementById("coinsDisplay");
+
+  if (coinDisplay) {
+    coinDisplay.textContent = data.coins;
+  }
+}
 
 function updateAuthUI() {
   const loginBtn = document.getElementById("loginBtn");
@@ -770,6 +799,7 @@ sendResetLinkBtn.addEventListener("click", async () => {
       updateAuthUI();
       loadUserMeals();
       checkSubscription();
+      loadUserCoins();
 
     } catch (err) {
       console.error("❌ Auth request failed:", err);
@@ -791,6 +821,6 @@ sendResetLinkBtn.addEventListener("click", async () => {
   if (authToken) {
     checkSubscription();
     loadUserMeals();
+    loadUserCoins();
   }
 });
-

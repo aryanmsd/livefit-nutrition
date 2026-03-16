@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LiveFit — Rewards Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --primary: #00e5ff; --secondary: #ff4d6d;
+      --bg: #070d1a; --card: #0f1e35; --border: #1a3a5c;
+      --text: #e2f0ff; --muted: #5a7a9a; --success: #22c55e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; }
+
+    /* ── Single-row header matching index.html ── */
+    .main-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 60px; position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,229,255,0.1); gap: 16px;
+    }
+    .main-header .logo { flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; align-items: center; gap: 2px; flex: 1; justify-content: center; flex-wrap: nowrap; }
+    .nav-links a { padding: 5px 10px; font-size: 0.78rem; white-space: nowrap; text-decoration: none; color: var(--muted); transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+    .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .coins-box {
+      font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--primary);
+      background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 20px; padding: 5px 12px; white-space: nowrap;
+    }
+    .welcome-user { font-size: 0.8rem; white-space: nowrap; color: var(--text); }
+    .btn { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer; background: var(--secondary); color: #fff; }
+
+    /* ── Page ── */
+    .redeem-hero { text-align: center; padding: 52px 20px 32px; }
+    .redeem-hero h1 {
+      font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900;
+      background: linear-gradient(135deg, var(--primary), #00ffcc);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .redeem-hero p { color: var(--muted); margin-top: 10px; font-size: 1.05rem; }
+
+    .balance-card {
+      max-width: 560px; margin: 0 auto 32px;
+      background: var(--card); border: 1px solid var(--primary); border-radius: 20px;
+      padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 0 40px rgba(0,229,255,0.08);
+    }
+    .balance-label { font-size: 0.72rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+    .balance-amount { font-family: 'Orbitron', sans-serif; font-size: 2.6rem; font-weight: 700; color: var(--primary); margin-top: 4px; }
+    .earn-hints span { display: block; color: var(--muted); font-size: 0.82rem; text-align: right; margin-bottom: 3px; }
+
+    .tab-bar {
+      max-width: 560px; margin: 0 auto 28px;
+      display: flex; background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 5px; gap: 4px;
+    }
+    .tab-btn {
+      flex: 1; padding: 10px; border: none; border-radius: 10px;
+      font-family: 'Orbitron', sans-serif; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.5px; cursor: pointer; background: transparent; color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active { background: var(--primary); color: #000; }
+
+    .rewards-wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+    .section-label { font-family: 'Orbitron', sans-serif; font-size: 0.68rem; letter-spacing: 3px; color: var(--muted); margin-bottom: 18px; }
+    .rewards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+    .reward-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .reward-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+    .reward-card.can-afford { border-color: var(--accent-color, var(--border)); }
+    .reward-card.locked { opacity: 0.55; }
+
+    .reward-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 14px; background: var(--icon-bg, rgba(0,229,255,0.1));
+    }
+    .reward-card h3 { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: #fff; margin-bottom: 6px; }
+    .reward-card p  { color: var(--muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 16px; }
+
+    .reward-footer { display: flex; align-items: center; justify-content: space-between; }
+    .reward-cost { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 700; }
+    .reward-cost.can  { color: var(--primary); }
+    .reward-cost.cant { color: var(--muted); }
+
+    .redeem-btn {
+      font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700;
+      padding: 9px 18px; border-radius: 30px; border: none; cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s; letter-spacing: 0.5px;
+    }
+    .redeem-btn:active { transform: scale(0.97); }
+    .redeem-btn.active-btn { background: var(--accent-color, var(--primary)); color: #000; }
+    .redeem-btn.locked-btn { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* My Rewards */
+    .my-reward-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px; margin-bottom: 14px;
+    }
+    .my-reward-card.active-reward { border-color: rgba(34,197,94,0.5); }
+    .my-reward-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .my-reward-title { font-family: 'Orbitron', sans-serif; font-size: 0.88rem; color: #fff; }
+    .status-badge { font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; padding: 4px 10px; border-radius: 8px; }
+    .status-badge.active { background: rgba(34,197,94,0.12); color: var(--success); border: 1px solid var(--success); }
+    .status-badge.used   { background: rgba(26,58,92,0.5); color: var(--muted); border: 1px solid var(--border); }
+
+    .code-box {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px; text-align: center; margin-bottom: 10px;
+    }
+    .code-label { font-size: 0.68rem; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; }
+    .code-value { font-family: 'Orbitron', sans-serif; font-size: 1.7rem; font-weight: 900; letter-spacing: 6px; color: var(--primary); }
+    .code-hint  { color: var(--muted); font-size: 0.78rem; margin-top: 8px; }
+    .copy-btn {
+      font-family: 'Orbitron', sans-serif; font-size: 0.68rem; font-weight: 700;
+      padding: 7px 16px; border-radius: 20px; border: 1px solid var(--primary);
+      background: transparent; color: var(--primary); cursor: pointer; margin-top: 10px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .copy-btn:hover { background: var(--primary); color: #000; }
+    .reward-date { color: var(--muted); font-size: 0.78rem; margin-top: 8px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 9999; justify-content: center; align-items: center; padding: 24px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: var(--card); border: 1px solid var(--primary); border-radius: 24px;
+      padding: 36px 28px; max-width: 420px; width: 100%; text-align: center;
+      animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+    .modal-box .big-code {
+      font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+      letter-spacing: 6px; color: var(--primary); background: var(--bg);
+      border: 1px solid var(--primary); border-radius: 14px; padding: 18px; margin: 18px 0;
+    }
+    .modal-box h2 { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: #fff; margin: 10px 0 6px; }
+    .modal-close {
+      font-family: 'Orbitron', sans-serif; font-size: 0.78rem; font-weight: 700;
+      padding: 12px 28px; border-radius: 30px; border: none;
+      background: var(--primary); color: #000; cursor: pointer; margin-top: 10px;
+    }
+
+    .toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0d2b1f; border: 1px solid var(--success); color: var(--success);
+      font-family: 'Orbitron', sans-serif; font-size: 0.78rem;
+      padding: 11px 24px; border-radius: 40px; z-index: 10000; opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    #loginPrompt { display: none; text-align: center; padding: 80px 20px; }
+    #loginPrompt h2 { font-family: 'Orbitron', sans-serif; color: var(--primary); font-size: 1.4rem; margin-bottom: 12px; }
+    #loginPrompt p { color: var(--muted); }
+    #loginPrompt a { color: var(--primary); }
+
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-state .empty-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty-state p { color: var(--muted); font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="meals.html">Meals</a>
+    <a href="cart.html">Cart</a>
+    <a href="redeem.html" class="active">🎁 Rewards</a>
+    <a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" class="welcome-user" style="display:none;"></span>
+    <button id="logoutBtn" class="btn" style="display:none;">Logout</button>
+  </div>
+</header>
+
+<main>
+  <div id="loginPrompt">
+    <h2>Login Required</h2>
+    <p>Please <a href="index.html">log in</a> to access the Rewards Store.</p>
+  </div>
+
+  <div id="storeContent" style="display:none;">
+    <section class="redeem-hero">
+      <h1>⚡ Rewards Store</h1>
+      <p>Redeem your coins for exclusive perks — each gives you a unique code</p>
+    </section>
+
+    <div class="balance-card">
+      <div>
+        <div class="balance-label">Your Balance</div>
+        <div class="balance-amount"><span id="balanceCoins">0</span> 🪙</div>
+      </div>
+      <div class="earn-hints">
+        <span>+5 coins per food log</span>
+        <span>+20 coins per order</span>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabStore" onclick="switchTab('store')">🎁 Store</button>
+      <button class="tab-btn" id="tabMine" onclick="switchTab('mine')">🎫 My Rewards <span id="rewardCount"></span></button>
+    </div>
+
+    <div class="rewards-wrap" id="storePanel">
+      <div class="section-label">AVAILABLE REWARDS</div>
+      <div class="rewards-grid" id="rewardsGrid"></div>
+    </div>
+
+    <div class="rewards-wrap" id="myPanel" style="display:none;">
+      <div class="section-label">YOUR REDEEMED REWARDS</div>
+      <div id="myRewardsList"></div>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="codeModal">
+  <div class="modal-box">
+    <div style="font-size:3rem;">🎉</div>
+    <h2 id="modalTitle"></h2>
+    <p style="color:var(--muted);font-size:0.88rem;">Your unique redemption code:</p>
+    <div class="big-code" id="modalCode"></div>
+    <p style="color:var(--muted);font-size:0.82rem;">Show this at checkout. Find it anytime in My Rewards.</p>
+    <br>
+    <button class="modal-close" onclick="closeModal()">Got it!</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const REWARDS = [
+    { id:"discount_10",      title:"10% Off Next Order",  desc:"Get 10% off your next meal order",     cost:50,  icon:"🏷️", color:"#22c55e" },
+    { id:"discount_20",      title:"20% Off Next Order",  desc:"Get 20% off your next meal order",     cost:100, icon:"💸", color:"#3b82f6" },
+    { id:"free_meal",        title:"Free Meal Upgrade",   desc:"Upgrade any meal to premium for free", cost:150, icon:"🍱", color:"#f59e0b" },
+    { id:"pro_trial",        title:"7-Day Pro Trial",     desc:"Unlock all Pro features for 7 days",   cost:200, icon:"⭐", color:"#8b5cf6" },
+    { id:"free_delivery",    title:"Free Delivery",       desc:"Free delivery on your next 3 orders",  cost:75,  icon:"🚚", color:"#ec4899" },
+    { id:"nutrition_report", title:"Nutrition Deep Dive", desc:"Personalised weekly nutrition report", cost:120, icon:"📊", color:"#14b8a6" }
+  ];
+
+  const token = localStorage.getItem("authToken");
+  let currentCoins = 0;
+  let myRewards    = [];
+
+  async function init() {
+    if (!token) {
+      document.getElementById("loginPrompt").style.display  = "block";
+      document.getElementById("storeContent").style.display = "none";
+      return;
+    }
+    document.getElementById("storeContent").style.display = "block";
+    document.getElementById("welcomeUser").textContent     = "👋 " + (localStorage.getItem("username") || "");
+    document.getElementById("welcomeUser").style.display   = "inline-block";
+    document.getElementById("logoutBtn").style.display     = "inline-block";
+
+    await loadCoins();
+    await loadMyRewards();
+    renderStore();
+  }
+
+  async function loadCoins() {
+    try {
+      const res  = await fetch("/api/coins", { headers: authH() });
+      const data = await res.json();
+      currentCoins = data.coins || 0;
+      document.getElementById("coinsDisplay").textContent = currentCoins;
+      document.getElementById("balanceCoins").textContent = currentCoins;
+    } catch (e) { console.error("loadCoins error:", e); }
+  }
+
+  async function loadMyRewards() {
+    try {
+      const res  = await fetch("/api/my-rewards", { headers: authH() });
+      const data = await res.json();
+      // Guard: only use data if it's actually an array
+      myRewards = Array.isArray(data) ? data : [];
+      document.getElementById("rewardCount").textContent =
+        myRewards.length ? `(${myRewards.length})` : "";
+    } catch (e) {
+      console.error("loadMyRewards error:", e);
+      myRewards = [];
+    }
+  }
+
+  function authH() {
+    return { "Authorization": "Bearer " + token, "Content-Type": "application/json" };
+  }
+
+  function renderStore() {
+    const grid = document.getElementById("rewardsGrid");
+    grid.innerHTML = "";
+    REWARDS.forEach(r => {
+      const canAfford = currentCoins >= r.cost;
+      const card = document.createElement("div");
+      card.className = `reward-card ${canAfford ? "can-afford" : "locked"}`;
+      card.style.setProperty("--accent-color", r.color);
+      card.style.setProperty("--icon-bg", r.color + "20");
+      card.innerHTML = `
+        <div class="reward-icon">${r.icon}</div>
+        <h3>${r.title}</h3>
+        <p>${r.desc}</p>
+        <div class="reward-footer">
+          <span class="reward-cost ${canAfford ? "can" : "cant"}">🪙 ${r.cost}</span>
+          <button class="redeem-btn ${canAfford ? "active-btn" : "locked-btn"}"
+            ${!canAfford ? "disabled" : ""}
+            onclick="handleRedeem('${r.id}','${r.title}',${r.cost},this)">
+            ${canAfford ? "Redeem" : "🔒 Locked"}
+          </button>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  async function handleRedeem(id, title, cost, btn) {
+    if (!confirm(`Spend ${cost} 🪙 coins for "${title}"?`)) return;
+    btn.disabled    = true;
+    btn.textContent = "...";
+    try {
+      const res  = await fetch("/api/redeem", {
+        method:  "POST",
+        headers: authH(),
+        body:    JSON.stringify({ cost, rewardId: id, rewardTitle: title })
+      });
+      const data = await res.json();
+      if (data.error) { alert(data.error); renderStore(); return; }
+
+      currentCoins = data.coins;
+      document.getElementById("coinsDisplay").textContent = currentCoins;
+      document.getElementById("balanceCoins").textContent = currentCoins;
+
+      await loadMyRewards();
+      renderStore();
+
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalCode").textContent  = data.code;
+      document.getElementById("codeModal").classList.add("show");
+    } catch (e) {
+      console.error("handleRedeem error:", e);
+      alert("Redemption failed. Try again.");
+      renderStore();
+    }
+  }
+
+  function renderMyRewards() {
+    const list = document.getElementById("myRewardsList");
+    if (!myRewards.length) {
+      list.innerHTML = `<div class="empty-state">
+        <div class="empty-icon">🎫</div>
+        <p>No rewards redeemed yet.<br>Head to the Store to spend your coins!</p>
+      </div>`;
+      return;
+    }
+    list.innerHTML = myRewards.map(r => `
+      <div class="my-reward-card ${r.used ? "" : "active-reward"}">
+        <div class="my-reward-header">
+          <span class="my-reward-title">${r.rewardTitle}</span>
+          <span class="status-badge ${r.used ? "used" : "active"}">${r.used ? "USED" : "ACTIVE"}</span>
+        </div>
+        <div class="code-box">
+          <div class="code-label">YOUR UNIQUE CODE</div>
+          <div class="code-value">${r.code}</div>
+          <div class="code-hint">Show this at checkout to claim your reward</div>
+          <button class="copy-btn" onclick="copyCode('${r.code}', this)">Copy Code</button>
+        </div>
+        <div class="reward-date">Redeemed ${new Date(r.redeemedAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}</div>
+      </div>`).join("");
+  }
+
+  function copyCode(code, btn) {
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = "✓ Copied!";
+      setTimeout(() => btn.textContent = "Copy Code", 2000);
+    });
+  }
+
+  function switchTab(tab) {
+    const isStore = tab === "store";
+    document.getElementById("tabStore").classList.toggle("active",  isStore);
+    document.getElementById("tabMine").classList.toggle("active",  !isStore);
+    document.getElementById("storePanel").style.display = isStore ? "block" : "none";
+    document.getElementById("myPanel").style.display    = isStore ? "none"  : "block";
+    if (!isStore) renderMyRewards();
+  }
+
+  function closeModal() {
+    document.getElementById("codeModal").classList.remove("show");
+    switchTab("mine");
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("username");
+    window.location.href = "index.html";
+  });
+
+  init();
+</script>
+</body>
+</html>

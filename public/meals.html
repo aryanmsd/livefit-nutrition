@@ -20,20 +20,24 @@
   <!-- MEALS GRID -->
   <div id="mealsContainer" class="meals-grid"></div>
 
-  <!-- CART SECTION -->
-  <div class="cart-section">
-    <h2>Your Cart</h2>
-
-    <div id="cartItems"></div>
-
-    <button id="placeOrderBtn" class="btn btn-primary">
-      Place Order
-    </button>
+  <!-- Link to cart page instead of embedding cart here -->
+  <div style="text-align:center; margin-top: 32px;">
+    <a href="cart.html" style="
+      display: inline-block;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 14px 32px;
+      background: #00e5ff;
+      color: #000;
+      border-radius: 12px;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    ">🛒 View Cart &amp; Checkout →</a>
   </div>
 
 </section>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="checkout.js"></script>
+
 <script src="meals.js"></script>
 </body>
 </html>

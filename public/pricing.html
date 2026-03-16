@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — Pricing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 48px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;font-size:1.1rem;margin-top:12px;}
+    .content-wrap{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin-top:8px;}
+    .plan-card{background:#0f1e35;border:1px solid #1a3a5c;border-radius:20px;padding:32px;position:relative;transition:transform 0.2s;}
+    .plan-card:hover{transform:translateY(-4px);}
+    .plan-card.featured{border-color:#00e5ff;box-shadow:0 0 40px rgba(0,229,255,0.12);}
+    .plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#00e5ff;color:#000;font-family:'Orbitron',sans-serif;font-size:0.65rem;font-weight:900;padding:4px 16px;border-radius:20px;white-space:nowrap;}
+    .plan-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:#e2f0ff;margin-bottom:8px;}
+    .plan-price{font-family:'Orbitron',sans-serif;font-size:2.4rem;font-weight:900;color:#00e5ff;margin:12px 0 4px;}
+    .plan-price span{font-size:1rem;font-weight:400;color:#5a7a9a;}
+    .plan-desc{color:#5a7a9a;font-size:0.88rem;margin-bottom:24px;line-height:1.5;}
+    .plan-features{list-style:none;margin-bottom:28px;}
+    .plan-features li{display:flex;align-items:flex-start;gap:10px;color:#b0c8e0;font-size:0.92rem;padding:7px 0;border-bottom:1px solid #1a3a5c;}
+    .plan-features li:last-child{border:none;}
+    .plan-features li i{color:#00e5ff;margin-top:2px;flex-shrink:0;}
+    .plan-features li.muted{color:#5a7a9a;}
+    .plan-features li.muted i{color:#5a7a9a;}
+    .plan-btn{width:100%;font-family:'Orbitron',sans-serif;font-size:0.78rem;font-weight:700;padding:13px;border-radius:12px;border:none;cursor:pointer;transition:opacity 0.2s;letter-spacing:0.5px;}
+    .plan-btn.primary{background:#00e5ff;color:#000;}
+    .plan-btn.outline{background:transparent;color:#00e5ff;border:1px solid #00e5ff;}
+    .plan-btn:hover{opacity:0.85;}
+    .faq{margin-top:48px;}
+    .faq h2{font-family:'Orbitron',sans-serif;font-size:1rem;color:#e2f0ff;margin-bottom:20px;text-align:center;}
+    .faq-item{background:#0f1e35;border:1px solid #1a3a5c;border-radius:12px;padding:20px 24px;margin-bottom:12px;}
+    .faq-item h3{font-size:1rem;color:#00e5ff;margin-bottom:8px;}
+    .faq-item p{color:#5a7a9a;font-size:0.92rem;line-height:1.6;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a><a href="meals.html">Meals</a><a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a><a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+<main>
+  <div class="page-hero">
+    <h1>Simple Pricing</h1>
+    <p>Start free. Upgrade when you're ready.</p>
+  </div>
+  <div class="content-wrap">
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₹0 <span>/ forever</span></div>
+        <div class="plan-desc">Everything you need to get started with nutrition tracking.</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Meal logging (breakfast, lunch, dinner)</li>
+          <li><i class="fas fa-check"></i> AI food identification by photo</li>
+          <li><i class="fas fa-check"></i> Daily macro dashboard</li>
+          <li><i class="fas fa-check"></i> Coins & rewards</li>
+          <li><i class="fas fa-check"></i> Healthy meal ordering</li>
+          <li class="muted"><i class="fas fa-times"></i> Limited AI chat (5/day)</li>
+          <li class="muted"><i class="fas fa-times"></i> Advanced analytics</li>
+        </ul>
+        <a href="index.html"><button class="plan-btn outline">Get Started Free</button></a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan-card featured">
+        <div class="plan-badge">MOST POPULAR</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">₹499 <span>/ month</span></div>
+        <div class="plan-desc">For serious fitness enthusiasts who want the full LiveFit experience.</div>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Everything in Free</li>
+          <li><i class="fas fa-check"></i> Unlimited AI Nutrition Coach</li>
+          <li><i class="fas fa-check"></i> Advanced nutrition analytics</li>
+          <li><i class="fas fa-check"></i> Weekly nutrition reports</li>
+          <li><i class="fas fa-check"></i> Priority order support</li>
+          <li><i class="fas fa-check"></i> Exclusive Pro discounts</li>
+          <li><i class="fas fa-check"></i> Early access to new features</li>
+        </ul>
+        <a href="subscription.html"><button class="plan-btn primary">Upgrade to Pro</button></a>
+      </div>
+
+    </div>
+
+    <div class="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3>Can I cancel my Pro subscription anytime?</h3>
+        <p>Yes. Your subscription runs for 30 days from purchase. You won't be charged again unless you renew. There are no cancellation fees.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What happens to my data if I downgrade?</h3>
+        <p>All your food logs, order history, and earned coins are preserved. You simply lose access to Pro-only features like unlimited AI chat.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is the Free plan actually free forever?</h3>
+        <p>Yes — no credit card required. The Free plan is permanently free with no hidden charges.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How do I pay?</h3>
+        <p>We accept all major cards, UPI, net banking, and wallets via Razorpay — India's most trusted payment gateway.</p>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>(function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}</script>
+</body>
+</html>

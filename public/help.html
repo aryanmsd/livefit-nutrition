@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — Help Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 48px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;font-size:1.1rem;margin-top:12px;}
+    .content-wrap{max-width:800px;margin:0 auto;padding:0 20px 80px;}
+    .help-category{margin-bottom:36px;}
+    .help-category h2{font-family:'Orbitron',sans-serif;font-size:0.8rem;letter-spacing:2px;color:#5a7a9a;margin-bottom:16px;text-transform:uppercase;}
+    .faq-item{background:#0f1e35;border:1px solid #1a3a5c;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+    .faq-question{width:100%;background:none;border:none;padding:18px 22px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#e2f0ff;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;}
+    .faq-question i{color:#5a7a9a;transition:transform 0.2s;flex-shrink:0;}
+    .faq-question.open i{transform:rotate(180deg);color:#00e5ff;}
+    .faq-answer{display:none;padding:0 22px 18px;color:#5a7a9a;font-size:0.92rem;line-height:1.7;}
+    .faq-answer.open{display:block;}
+    .contact-box{background:#0f1e35;border:1px solid #00e5ff;border-radius:16px;padding:32px;text-align:center;margin-top:40px;}
+    .contact-box h3{font-family:'Orbitron',sans-serif;color:#00e5ff;margin-bottom:10px;}
+    .contact-box p{color:#5a7a9a;margin-bottom:20px;}
+    .contact-btn{display:inline-block;font-family:'Orbitron',sans-serif;font-size:0.78rem;font-weight:700;padding:12px 28px;border-radius:12px;background:#00e5ff;color:#000;text-decoration:none;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a><a href="meals.html">Meals</a><a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a><a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+<main>
+  <div class="page-hero">
+    <h1>Help Center</h1>
+    <p>Find answers to the most common questions about LiveFit.</p>
+  </div>
+  <div class="content-wrap">
+
+    <div class="help-category">
+      <h2>Getting Started</h2>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">How do I create an account? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Click "Sign Up" on the homepage, enter your username, email, and password, and you're in. No credit card needed.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">How do I log my first meal? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">From the Dashboard, click "+ Add Food" under Breakfast, Lunch, or Dinner. Type a food name or upload a photo — our AI will identify it and add the nutrition info automatically.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">Is there a mobile app? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Yes! LiveFit is available as a mobile app built with React Native. Ask your administrator for the APK or check the app stores.</div></div>
+    </div>
+
+    <div class="help-category">
+      <h2>Food Tracking</h2>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">How accurate is the AI food identification? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Our AI achieves ~98% accuracy on common foods. For best results, take a clear, well-lit photo of the food from directly above.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">Can I delete a food I added by mistake? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Yes — on the mobile app, each food entry has a delete option. On the web, click the × button next to the food item in the Meal Tracker.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">Why don't I see yesterday's food? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">The dashboard shows today's entries by default. Food logs are date-specific — each day starts fresh.</div></div>
+    </div>
+
+    <div class="help-category">
+      <h2>Coins & Rewards</h2>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">How do I earn coins? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">You earn 5 coins every time you log a food item, and 20 coins every time you place a meal order.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">How do I use a reward code? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Go to the Rewards Store, redeem a reward to get a unique code (e.g. LF-A3X9K2). Then go to your Cart, enter the code in the "Apply Reward Code" field, and the discount is applied before payment.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">Can I use a reward code more than once? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">No — each code is single-use. Once applied at checkout, it's marked as used. You can redeem new rewards to get fresh codes.</div></div>
+    </div>
+
+    <div class="help-category">
+      <h2>Orders & Payment</h2>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">What payment methods are accepted? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">We accept all major credit/debit cards, UPI, net banking, and popular wallets via Razorpay.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">Where can I find my order invoice? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Go to the Orders page (web or mobile) and click "Download Invoice" next to any order. A PDF is generated automatically for every order.</div></div>
+      <div class="faq-item"><button class="faq-question" onclick="toggle(this)">I was charged but the order didn't go through. What do I do? <i class="fas fa-chevron-down"></i></button><div class="faq-answer">Please contact us at nutrition.livefit@gmail.com with your payment ID. We'll resolve it within 24 hours.</div></div>
+    </div>
+
+    <div class="contact-box">
+      <h3>Still need help?</h3>
+      <p>Our support team is here for you. Send us an email and we'll get back to you within 24 hours.</p>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com&su=LiveFit%20Support&body=Hello%20LiveFit%20Team," target="_blank" class="contact-btn">📧 Email Support</a>
+    </div>
+
+  </div>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>
+  function toggle(btn){btn.classList.toggle("open");btn.nextElementSibling.classList.toggle("open");}
+  (function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();
+  function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}
+</script>
+</body>
+</html>

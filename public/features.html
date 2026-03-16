@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — Features</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 48px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;font-size:1.1rem;margin-top:12px;max-width:600px;margin-left:auto;margin-right:auto;}
+    .content-wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px;}
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+    .feature-card{background:#0f1e35;border:1px solid #1a3a5c;border-radius:16px;padding:28px;transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s;}
+    .feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.4);border-color:var(--accent,#00e5ff);}
+    .feature-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;background:var(--icon-bg,rgba(0,229,255,0.1));}
+    .feature-card h3{font-family:'Orbitron',sans-serif;font-size:0.9rem;color:#e2f0ff;margin-bottom:10px;}
+    .feature-card p{color:#5a7a9a;font-size:0.92rem;line-height:1.6;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a><a href="meals.html">Meals</a><a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a><a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+<main>
+  <div class="page-hero">
+    <h1>Everything You Need</h1>
+    <p>Powerful features that make nutrition tracking simple, smart, and rewarding.</p>
+  </div>
+  <div class="content-wrap">
+    <div class="features-grid">
+      <div class="feature-card" style="--accent:#00e5ff;--icon-bg:rgba(0,229,255,0.1);">
+        <div class="feature-icon">📸</div>
+        <h3>AI Food Identification</h3>
+        <p>Snap a photo of any meal and our AI instantly identifies the food and calculates its full nutritional profile — calories, protein, carbs, and fats.</p>
+      </div>
+      <div class="feature-card" style="--accent:#22c55e;--icon-bg:rgba(34,197,94,0.1);">
+        <div class="feature-icon">📊</div>
+        <h3>Real-Time Nutrition Tracking</h3>
+        <p>Track your daily intake across breakfast, lunch, and dinner. Visual charts show your macro breakdown at a glance so you always know where you stand.</p>
+      </div>
+      <div class="feature-card" style="--accent:#f59e0b;--icon-bg:rgba(245,158,11,0.1);">
+        <div class="feature-icon">🪙</div>
+        <h3>Coins & Rewards</h3>
+        <p>Earn coins every time you log a meal (+5) or place an order (+20). Redeem them for discounts, free meals, and exclusive perks in the Rewards Store.</p>
+      </div>
+      <div class="feature-card" style="--accent:#8b5cf6;--icon-bg:rgba(139,92,246,0.1);">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Nutrition Coach</h3>
+        <p>Chat with your personal AI coach anytime. Ask about foods, get macro advice, meal suggestions, and tailored tips based on what you've eaten today.</p>
+      </div>
+      <div class="feature-card" style="--accent:#ec4899;--icon-bg:rgba(236,72,153,0.1);">
+        <div class="feature-icon">🍱</div>
+        <h3>Healthy Meal Ordering</h3>
+        <p>Browse and order chef-crafted healthy meals delivered to your door. Every meal shows full nutrition info so you know exactly what you're eating.</p>
+      </div>
+      <div class="feature-card" style="--accent:#14b8a6;--icon-bg:rgba(20,184,166,0.1);">
+        <div class="feature-icon">⭐</div>
+        <h3>Pro Subscription</h3>
+        <p>Upgrade to Pro for unlimited AI chat, advanced analytics, priority support, and exclusive member discounts. Cancel anytime.</p>
+      </div>
+      <div class="feature-card" style="--accent:#3b82f6;--icon-bg:rgba(59,130,246,0.1);">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile App</h3>
+        <p>Full-featured iOS and Android app. Log food, chat with AI, order meals, and track rewards — all from your phone, even on the go.</p>
+      </div>
+      <div class="feature-card" style="--accent:#f97316;--icon-bg:rgba(249,115,22,0.1);">
+        <div class="feature-icon">🧾</div>
+        <h3>Order Invoices</h3>
+        <p>Every meal order automatically generates a PDF invoice you can download anytime from your order history. Perfect for expense tracking.</p>
+      </div>
+      <div class="feature-card" style="--accent:#00e5ff;--icon-bg:rgba(0,229,255,0.1);">
+        <div class="feature-icon">🔒</div>
+        <h3>Secure & Private</h3>
+        <p>Your health data is encrypted and never sold. JWT-based authentication keeps your account safe, and you can reset your password anytime via email.</p>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>(function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}</script>
+</body>
+</html>

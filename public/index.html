@@ -3,18 +3,212 @@
 <head>
   <meta charset="UTF-8" />
   <title>LiveFit</title>
-
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Cyberpunk Styles -->
   <link rel="stylesheet" href="styles.css">
-  
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    /* ── Single-row header ── */
+    .main-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,229,255,0.1);
+      gap: 16px;
+    }
+    .main-header .logo {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+      justify-content: center;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+    .nav-links a {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      flex-wrap: nowrap;
+    }
+    .coins-box {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      color: var(--primary, #00e5ff);
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.25);
+      border-radius: 20px;
+      padding: 5px 12px;
+      white-space: nowrap;
+    }
+    .welcome-user {
+      font-size: 0.8rem;
+      white-space: nowrap;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .subscription-badge { font-size: 0.7rem; white-space: nowrap; }
+    .header-right .btn { padding: 6px 14px; font-size: 0.75rem; }
+    @media (max-width: 768px) {
+      .main-header { height: auto; flex-wrap: wrap; padding: 10px 16px; gap: 8px; }
+      .nav-links    { flex: unset; width: 100%; justify-content: flex-start; flex-wrap: wrap; order: 3; }
+      .header-right { order: 2; }
+    }
 
+    /* ═══════════════════════════════════════════════
+       NUTRITION INSIGHTS — complete override
+    ═══════════════════════════════════════════════ */
+
+    /* Side-by-side layout */
+    .nutrition-insights {
+      padding: 48px 24px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .insights-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .insights-container { grid-template-columns: 1fr; }
+    }
+
+    /* Chart card */
+    .chart-container {
+      background: var(--card-bg, #0f1e35);
+      border: 1px solid var(--border-color, #1a3a5c);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    /* Tips card — override ALL old styles */
+    .nutrition-tips {
+      background: var(--card-bg, #0f1e35) !important;
+      border: 1px solid var(--border-color, #1a3a5c) !important;
+      border-radius: 16px !important;
+      padding: 24px !important;
+      text-align: left !important;
+      margin: 0 !important;
+    }
+
+    .nutrition-tips h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      color: var(--text-secondary, #5a7a9a);
+      text-transform: uppercase;
+      margin: 0 0 20px 0 !important;
+      padding-bottom: 14px !important;
+      border-bottom: 1px solid var(--border-color, #1a3a5c) !important;
+      width: auto !important;
+      text-align: left !important;
+    }
+
+    /* List — vertical stack, no centering */
+    .nutrition-tips ul {
+      list-style: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0 !important;
+    }
+
+    /* Each tip row */
+    .nutrition-tips li {
+      display: flex !important;
+      align-items: flex-start !important;
+      gap: 14px !important;
+      padding: 16px 0 !important;
+      border-bottom: 1px solid var(--border-color, #1a3a5c) !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      max-width: none !important;
+      margin: 0 !important;
+      color: var(--text-secondary, #b0c8e0) !important;
+      font-size: 0.92rem !important;
+      line-height: 1.55 !important;
+      font-weight: 400 !important;
+      text-align: left !important;
+      transition: none !important;
+      transform: none !important;
+    }
+    .nutrition-tips li:last-child {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+    .nutrition-tips li:first-child { padding-top: 0 !important; }
+
+    /* Hover — subtle background only, no transform */
+    .nutrition-tips li:hover {
+      background: rgba(0,229,255,0.04) !important;
+      color: var(--text-color, #e2f0ff) !important;
+      transform: none !important;
+      border-radius: 8px !important;
+      padding-left: 8px !important;
+    }
+
+    /* Icon circle */
+    .tip-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .tip-icon.green  { background: rgba(34,197,94,0.15);  color: #22c55e; }
+    .tip-icon.cyan   { background: rgba(0,229,255,0.12);  color: #00e5ff; }
+    .tip-icon.blue   { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .tip-icon.orange { background: rgba(249,115,22,0.15); color: #f97316; }
+    .tip-icon.red    { background: rgba(239,68,68,0.15);  color: #ef4444; }
+    .tip-icon.purple { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+
+    /* Text block inside tip */
+    .tip-body strong {
+      display: block;
+      color: var(--text-color, #e2f0ff);
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .tip-body span {
+      color: var(--text-secondary, #5a7a9a);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* Default tips shown before any food is logged */
+    .tip-default { display: flex; }
+    .tip-dynamic { display: none; }
+  </style>
 </head>
 <body>
 
@@ -26,20 +220,20 @@
     <i class="fas fa-heartbeat"></i>
     <span>LiveFit</span>
   </div>
-
   <nav class="nav-links">
     <a href="#dashboard" class="active">Dashboard</a>
     <a href="#tracker">Meal Tracker</a>
     <a href="#nutrition">Nutrition</a>
-    <a href="#profile">Profile</a>
-    <a href="meals.html" id="mealsLink" style="display:none;">Meals</a>
-    <a href="subscription.html" id="subscriptionLink" style="display:none;">Subscription</a>
+    <a href="meals.html"        id="mealsLink"        style="display:none;">Meals</a>
+    <a href="cart.html"         id="cartLink"          style="display:none;">Cart</a>
+    <a href="redeem.html"       id="redeemLink"        style="display:none;">🎁 Rewards</a>
+    <a href="subscription.html" id="subscriptionLink"  style="display:none;">Subscription</a>
   </nav>
-
-  <div class="auth-buttons">
-    <span id="welcomeUser" class="welcome-user" style="display:none;"></span>
+  <div class="header-right">
+    <div class="coins-box">🪙 <span id="coinsDisplay">0</span></div>
     <span id="subscriptionBadge" class="subscription-badge"></span>
-    <button id="loginBtn" class="btn">Log In</button>
+    <span id="welcomeUser" class="welcome-user" style="display:none;"></span>
+    <button id="loginBtn"  class="btn">Log In</button>
     <button id="signupBtn" class="btn btn-primary">Sign Up</button>
   </div>
 </header>
@@ -61,7 +255,6 @@
   <!-- DASHBOARD -->
   <section id="dashboard" class="dashboard">
     <h2>Your Daily Summary</h2>
-
     <div class="stats-container">
       <div class="stat-card">
         <div class="stat-value">0</div>
@@ -69,21 +262,18 @@
         <div class="stat-progress"><div class="progress-bar"></div></div>
         <div class="stat-goal">Goal: 2000</div>
       </div>
-
       <div class="stat-card">
         <div class="stat-value">0g</div>
         <div class="stat-label">Protein</div>
         <div class="stat-progress"><div class="progress-bar"></div></div>
         <div class="stat-goal">Goal: 120g</div>
       </div>
-
       <div class="stat-card">
         <div class="stat-value">0g</div>
         <div class="stat-label">Carbs</div>
         <div class="stat-progress"><div class="progress-bar"></div></div>
         <div class="stat-goal">Goal: 300g</div>
       </div>
-
       <div class="stat-card">
         <div class="stat-value">0g</div>
         <div class="stat-label">Fats</div>
@@ -96,137 +286,223 @@
   <!-- MEAL TRACKER -->
   <section id="tracker" class="meal-tracker">
     <h2>Today's Meals</h2>
-
     <div class="meal-cards">
-
       <div class="meal-card">
-        <div class="meal-header">
-          <h3>Breakfast</h3>
-          <span class="meal-calories">0 cal</span>
-        </div>
+        <div class="meal-header"><h3>Breakfast</h3><span class="meal-calories">0 cal</span></div>
         <ul class="food-items"></ul>
         <button class="btn-add-food">+ Add Food</button>
       </div>
-
       <div class="meal-card">
-        <div class="meal-header">
-          <h3>Lunch</h3>
-          <span class="meal-calories">0 cal</span>
-        </div>
+        <div class="meal-header"><h3>Lunch</h3><span class="meal-calories">0 cal</span></div>
         <ul class="food-items"></ul>
         <button class="btn-add-food">+ Add Food</button>
       </div>
-
       <div class="meal-card">
-        <div class="meal-header">
-          <h3>Dinner</h3>
-          <span class="meal-calories">0 cal</span>
-        </div>
+        <div class="meal-header"><h3>Dinner</h3><span class="meal-calories">0 cal</span></div>
         <ul class="food-items"></ul>
         <button class="btn-add-food">+ Add Food</button>
       </div>
-
     </div>
   </section>
 
-  <!-- NUTRITION -->
+  <!-- NUTRITION INSIGHTS -->
   <section id="nutrition" class="nutrition-insights">
     <h2>Nutrition Insights</h2>
-
     <div class="insights-container">
+
+      <!-- Chart -->
       <div class="chart-container">
         <canvas id="nutritionChart"></canvas>
       </div>
 
+      <!-- Tips -->
       <div class="nutrition-tips">
         <h3>AI Tips</h3>
-        <ul>
-          <li>Optimize protein intake</li>
-          <li>Increase fiber</li>
-          <li>Hydration boost recommended</li>
+        <ul id="tipsList">
+
+          <!-- Default tips (shown before food is logged) -->
+          <li class="tip-default" id="tip-protein">
+            <div class="tip-icon green"><i class="fas fa-drumstick-bite"></i></div>
+            <div class="tip-body">
+              <strong>Optimise protein intake</strong>
+              <span>Aim for 20–30g per meal to support muscle repair and keep hunger at bay throughout the day.</span>
+            </div>
+          </li>
+
+          <li class="tip-default" id="tip-fiber">
+            <div class="tip-icon cyan"><i class="fas fa-seedling"></i></div>
+            <div class="tip-body">
+              <strong>Increase your fibre</strong>
+              <span>Add whole grains, legumes, and vegetables to improve digestion and maintain steady energy levels.</span>
+            </div>
+          </li>
+
+          <li class="tip-default" id="tip-hydration">
+            <div class="tip-icon blue"><i class="fas fa-tint"></i></div>
+            <div class="tip-body">
+              <strong>Hydration boost recommended</strong>
+              <span>Drink at least 8 glasses of water daily. Proper hydration supports metabolism and reduces fatigue.</span>
+            </div>
+          </li>
+
+          <li class="tip-default" id="tip-meals">
+            <div class="tip-icon purple"><i class="fas fa-clock"></i></div>
+            <div class="tip-body">
+              <strong>Don't skip meals</strong>
+              <span>Eating regularly keeps your metabolism active and prevents overeating later in the day.</span>
+            </div>
+          </li>
+
         </ul>
       </div>
+
     </div>
   </section>
 
 </main>
 
 <footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>LiveFit</h4>
+      <p>Your personal nutrition and fitness companion.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="blog.html">Blog</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="help.html">Help Center</a></li>
+        <li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com&su=Contact%20Us%20-%20LiveFit%20Support&body=Hello%20LiveFit%20Team,%0D%0A%0D%0A" target="_blank" rel="noopener noreferrer">Contact Us</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Connect With Us</h4>
+      <div class="social-links">
+        <a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank" rel="noopener noreferrer nofollow"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/_Live_fit_" class="social-link" target="_blank" rel="noopener noreferrer nofollow" style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;">
+          <svg viewBox="0 0 24 24" aria-hidden="true" style="width:20px;height:20px;fill:currentColor;"><g><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></g></svg>
+        </a>
+        <a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank" rel="noopener noreferrer nofollow"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank" rel="noopener noreferrer nofollow"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
   <div class="footer-bottom">
-    © 2025 LiveFit — Cyber Nutrition Engine
+    <p>&copy; 2025 LiveFit. All rights reserved.</p>
   </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="script.js"></script>
-<script src="chatbot.js" defer></script>
+<script src="script.js" defer></script>
 
-<!-- ========== AUTH MODAL ========== -->
+<!-- AUTH MODAL -->
 <div id="authModal" class="auth-modal">
-    <div class="auth-modal-content">
-  
-      <span id="closeAuthModal" class="close-btn">×</span>
-  
-      <h2 id="authTitle">Log In</h2>
-  
-      <!-- LOGIN / SIGNUP FORM -->
-      <form id="authForm">
-        <input type="text" id="usernameField" placeholder="Username" />
-        <input type="email" id="emailField" placeholder="Email" required />
-        <input type="password" id="passwordField" placeholder="Password" required />
-  
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-  
-      <!-- FORGOT PASSWORD FORM (HIDDEN INITIALLY) -->
-      <div id="forgotBox" style="display:none;">
-        <input
-          type="email"
-          id="forgotEmail"
-          placeholder="Enter your registered email"
-        />
-        <button id="sendResetLinkBtn" class="btn btn-outline">
-          Send Reset Link
-        </button>
-  
-        <p id="backToLogin" class="link-text">
-          ← Back to Login
-        </p>
-      </div>
-  
-      <!-- TOGGLE LINKS -->
-      <p id="toggleAuthMode" class="link-text">
-        Don't have an account? Sign Up
-      </p>
-  
-      <p id="forgotPasswordLink" class="link-text">
-        Forgot Password?
-      </p>
+  <div class="auth-modal-content">
+    <span id="closeAuthModal" class="close-btn">×</span>
+    <h2 id="authTitle">Log In</h2>
+    <form id="authForm">
+      <input type="text"     id="usernameField" placeholder="Username" />
+      <input type="email"    id="emailField"    placeholder="Email" required />
+      <input type="password" id="passwordField" placeholder="Password" required />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div id="forgotBox" style="display:none;">
+      <input type="email" id="forgotEmail" placeholder="Enter your registered email" />
+      <button id="sendResetLinkBtn" class="btn btn-outline">Send Reset Link</button>
+      <p id="backToLogin" class="link-text">← Back to Login</p>
     </div>
+    <p id="toggleAuthMode"    class="link-text">Don't have an account? Sign Up</p>
+    <p id="forgotPasswordLink" class="link-text">Forgot Password?</p>
   </div>
-
-  <!-- Chatbot Toggle Button -->
-<div id="chatbot-toggle">
-  🤖
 </div>
 
-<!-- Chatbot Window -->
+<!-- Chatbot -->
+<div id="chatbot-toggle">🤖</div>
 <div id="chatbot">
   <div class="chatbot-header">
     <span>LiveFit AI</span>
     <button id="close-chatbot">×</button>
   </div>
-
   <div class="chatbot-messages" id="chat-messages"></div>
-
   <div class="chatbot-input">
-    <input
-      type="text"
-      id="chat-input"
-      placeholder="Ask about nutrition..."
-    />
+    <input type="text" id="chat-input" placeholder="Ask about nutrition..." />
     <button id="send-btn">Send</button>
   </div>
 </div>
+<script src="chatbot.js" defer></script>
+
+<script>
+  // ── Dynamic tips: called from updateDashboard() in script.js ──
+  function updateNutritionTips(calories, protein, carbs, fats) {
+    const tips = [];
+
+    // Protein (goal 120g)
+    const proteinPct = (protein / 120) * 100;
+    if (proteinPct >= 85) {
+      tips.push({ icon: "fas fa-trophy",         color: "green",  title: "Protein goal crushed!",       body: "You're hitting your protein target. Great work — this supports muscle repair and keeps you full." });
+    } else if (proteinPct >= 50) {
+      tips.push({ icon: "fas fa-drumstick-bite", color: "cyan",   title: "Keep pushing protein",        body: `You're at ${Math.round(protein)}g of your 120g goal. Add eggs, paneer, or chicken to your next meal.` });
+    } else {
+      tips.push({ icon: "fas fa-drumstick-bite", color: "orange", title: "Protein is low today",        body: `Only ${Math.round(protein)}g so far. Prioritise a protein-rich meal — try dal, tofu, or grilled chicken.` });
+    }
+
+    // Calories (goal 2000)
+    const calPct = (calories / 2000) * 100;
+    if (calPct < 25) {
+      tips.push({ icon: "fas fa-fire",           color: "orange", title: "Don't skip meals",            body: "You've eaten very few calories today. Fuelling properly keeps your metabolism and energy up." });
+    } else if (calPct > 105) {
+      tips.push({ icon: "fas fa-balance-scale",  color: "red",    title: "Calorie goal exceeded",       body: `You're at ${Math.round(calories)} kcal. For the rest of the day, focus on vegetables and lean protein.` });
+    } else {
+      tips.push({ icon: "fas fa-check-circle",   color: "green",  title: "Calories on track",           body: `${Math.round(calories)} of 2000 kcal logged. You're pacing well — keep it balanced.` });
+    }
+
+    // Hydration — always show
+    tips.push({ icon: "fas fa-tint",             color: "blue",   title: "Stay hydrated",               body: "Aim for 8 glasses of water today. Hydration supports digestion, energy, and focus." });
+
+    // Fats (goal 90g)
+    if (fats > 80) {
+      tips.push({ icon: "fas fa-exclamation-circle", color: "red",  title: "High fat intake",           body: `${Math.round(fats)}g of fats logged. Swap fried foods for baked or grilled options where possible.` });
+    } else {
+      tips.push({ icon: "fas fa-seedling",           color: "cyan", title: "Increase your fibre",       body: "Add whole grains, legumes, and vegetables to improve digestion and maintain steady energy." });
+    }
+
+    // Render
+    const list = document.getElementById("tipsList");
+    if (!list) return;
+    list.innerHTML = tips.map(t => `
+      <li>
+        <div class="tip-icon ${t.color}"><i class="${t.icon}"></i></div>
+        <div class="tip-body">
+          <strong>${t.title}</strong>
+          <span>${t.body}</span>
+        </div>
+      </li>`).join("");
+  }
+
+  // ── Auth UI patch ──
+  document.addEventListener("DOMContentLoaded", () => {
+    const cartLink   = document.getElementById("cartLink");
+    const redeemLink = document.getElementById("redeemLink");
+    const origFn = window.updateAuthUI;
+    window.updateAuthUI = function() {
+      if (origFn) origFn();
+      const loggedIn = !!localStorage.getItem("authToken");
+      if (cartLink)   cartLink.style.display   = loggedIn ? "inline-block" : "none";
+      if (redeemLink) redeemLink.style.display  = loggedIn ? "inline-block" : "none";
+    };
+    window.updateAuthUI();
+  });
+</script>
+
 </body>
 </html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 48px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;font-size:1.1rem;margin-top:12px;}
+    .content-wrap{max-width:1000px;margin:0 auto;padding:0 20px 80px;}
+    .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}
+    .blog-card{background:#0f1e35;border:1px solid #1a3a5c;border-radius:16px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;}
+    .blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.4);}
+    .blog-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--grad-a,#0f1e35),var(--grad-b,#1a3a5c));}
+    .blog-body{padding:22px;}
+    .blog-tag{display:inline-block;font-family:'Orbitron',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:20px;background:var(--tag-bg,rgba(0,229,255,0.1));color:var(--tag-color,#00e5ff);margin-bottom:12px;}
+    .blog-card h3{font-size:1rem;font-weight:700;color:#e2f0ff;margin-bottom:10px;line-height:1.4;}
+    .blog-card p{color:#5a7a9a;font-size:0.88rem;line-height:1.6;margin-bottom:16px;}
+    .blog-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:#5a7a9a;}
+    .read-more{color:#00e5ff;font-weight:700;text-decoration:none;font-size:0.82rem;}
+    .read-more:hover{text-decoration:underline;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a><a href="meals.html">Meals</a><a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a><a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+<main>
+  <div class="page-hero">
+    <h1>LiveFit Blog</h1>
+    <p>Nutrition tips, fitness insights, and healthy living — powered by science.</p>
+  </div>
+  <div class="content-wrap">
+    <div class="blog-grid">
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#0d2b1f;--grad-b:#1a3a5c;">🥗</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(34,197,94,0.1);--tag-color:#22c55e;">NUTRITION</span>
+          <h3>How to Hit Your Protein Goals Every Day</h3>
+          <p>Protein is the most important macronutrient for muscle building and satiety. Here's a practical guide to reaching your daily target without obsessing over every bite.</p>
+          <div class="blog-meta"><span>5 min read</span><span>Jan 2025</span></div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#1a0f2e;--grad-b:#2d1b5e;">🧠</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(139,92,246,0.1);--tag-color:#8b5cf6;">AI & TECH</span>
+          <h3>How AI Identifies Your Food from a Photo</h3>
+          <p>Ever wondered how LiveFit can tell the difference between dal and sambar from a single photo? We break down the computer vision technology behind our food recognition engine.</p>
+          <div class="blog-meta"><span>7 min read</span><span>Jan 2025</span></div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#1a1f0d;--grad-b:#2e3a1a;">🍳</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(245,158,11,0.1);--tag-color:#f59e0b;">MEAL PREP</span>
+          <h3>5 High-Protein Indian Meals Under 500 Calories</h3>
+          <p>You don't have to sacrifice flavour for fitness. These five classic Indian dishes are nutritionist-approved, easy to make, and pack a serious protein punch.</p>
+          <div class="blog-meta"><span>6 min read</span><span>Feb 2025</span></div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#1a0a0f;--grad-b:#2e1520;">💧</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(59,130,246,0.1);--tag-color:#3b82f6;">WELLNESS</span>
+          <h3>Why Hydration is the Most Underrated Nutrition Hack</h3>
+          <p>Most people are mildly dehydrated without knowing it. Learn how drinking enough water affects your metabolism, energy, and even your hunger levels throughout the day.</p>
+          <div class="blog-meta"><span>4 min read</span><span>Feb 2025</span></div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#1a0f0d;--grad-b:#2e1e1a;">🏋️</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(236,72,153,0.1);--tag-color:#ec4899;">FITNESS</span>
+          <h3>What to Eat Before and After a Workout</h3>
+          <p>Timing your nutrition around exercise can dramatically improve your performance and recovery. Here's exactly what to eat in the 2-hour window before and after training.</p>
+          <div class="blog-meta"><span>5 min read</span><span>Mar 2025</span></div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb" style="--grad-a:#0d1a1a;--grad-b:#1a2e2e;">😴</div>
+        <div class="blog-body">
+          <span class="blog-tag" style="--tag-bg:rgba(20,184,166,0.1);--tag-color:#14b8a6;">LIFESTYLE</span>
+          <h3>The Surprising Link Between Sleep and Weight Management</h3>
+          <p>Poor sleep doesn't just make you tired — it actively sabotages your diet. Discover how sleep affects hunger hormones and what you can do about it tonight.</p>
+          <div class="blog-meta"><span>6 min read</span><span>Mar 2025</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>(function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}</script>
+</body>
+</html>

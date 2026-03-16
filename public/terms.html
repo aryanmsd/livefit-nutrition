@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LiveFit — Terms of Service</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-hero{text-align:center;padding:72px 20px 40px;}
+    .page-hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;background:linear-gradient(135deg,#00e5ff,#00ffcc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .page-hero p{color:#5a7a9a;margin-top:10px;}
+    .content-wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+    .doc-section{margin-bottom:32px;}
+    .doc-section h2{font-family:'Orbitron',sans-serif;font-size:0.9rem;color:#00e5ff;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a3a5c;}
+    .doc-section p,.doc-section li{color:#b0c8e0;font-size:0.95rem;line-height:1.8;margin-bottom:8px;}
+    .doc-section ul{padding-left:20px;}
+    .last-updated{color:#5a7a9a;font-size:0.82rem;text-align:center;margin-bottom:32px;}
+  </style>
+</head>
+<body>
+<header class="main-header">
+  <div class="logo"><i class="fas fa-heartbeat"></i><span>LiveFit</span></div>
+  <nav class="nav-links">
+    <a href="index.html">Dashboard</a><a href="meals.html">Meals</a><a href="cart.html">Cart</a>
+    <a href="redeem.html">🎁 Rewards</a><a href="subscription.html">Subscription</a>
+  </nav>
+  <div class="header-right">
+    <div class="coins-box" id="coinsBox" style="display:none;">🪙 <span id="coinsDisplay">0</span></div>
+    <span id="welcomeUser" style="display:none;font-size:0.8rem;color:#e2f0ff;"></span>
+    <a href="index.html" id="loginLink" class="btn">Log In</a>
+    <button id="logoutBtn" style="display:none;background:#ff4d6d;border:none;color:#fff;padding:6px 14px;border-radius:8px;font-family:'Orbitron',sans-serif;font-size:0.72rem;font-weight:700;cursor:pointer;" onclick="logout()">Logout</button>
+  </div>
+</header>
+<main>
+  <div class="page-hero">
+    <h1>Terms of Service</h1>
+    <p>Please read these terms carefully before using LiveFit.</p>
+  </div>
+  <div class="content-wrap">
+    <p class="last-updated">Last updated: January 2025</p>
+
+    <div class="doc-section">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By creating an account or using LiveFit ("the Service"), you agree to be bound by these Terms of Service. If you do not agree, please do not use the Service.</p>
+    </div>
+    <div class="doc-section">
+      <h2>2. Use of the Service</h2>
+      <ul>
+        <li>You must be at least 13 years old to use LiveFit.</li>
+        <li>You are responsible for maintaining the security of your account credentials.</li>
+        <li>You agree not to misuse the Service, including attempting to reverse-engineer, scrape, or disrupt it.</li>
+        <li>Each account is for a single user. Sharing accounts is not permitted.</li>
+      </ul>
+    </div>
+    <div class="doc-section">
+      <h2>3. Coins & Rewards</h2>
+      <p>LiveFit coins are virtual credits with no real monetary value. They can only be redeemed for rewards within the LiveFit platform. Coins are non-transferable, non-refundable, and expire if your account is deleted. LiveFit reserves the right to modify or discontinue the rewards programme at any time.</p>
+    </div>
+    <div class="doc-section">
+      <h2>4. Orders & Payments</h2>
+      <p>Meal orders are processed through Razorpay. By placing an order, you agree to Razorpay's terms of service. All prices are in Indian Rupees (INR). Once a payment is processed, orders cannot be cancelled unless the meal is unavailable. Refund requests must be submitted within 24 hours to nutrition.livefit@gmail.com.</p>
+    </div>
+    <div class="doc-section">
+      <h2>5. Subscriptions</h2>
+      <p>Pro subscriptions are valid for 30 days from the date of purchase. Subscriptions do not auto-renew — you must manually renew at the end of each period. No refunds are issued for unused subscription days.</p>
+    </div>
+    <div class="doc-section">
+      <h2>6. Health Disclaimer</h2>
+      <p>LiveFit is a nutrition tracking tool and is not a substitute for professional medical or dietary advice. Always consult a qualified healthcare professional before making significant changes to your diet. The AI Nutrition Coach provides general information only.</p>
+    </div>
+    <div class="doc-section">
+      <h2>7. Intellectual Property</h2>
+      <p>All content, branding, and code within LiveFit is the intellectual property of LiveFit. You may not reproduce, distribute, or create derivative works without written permission.</p>
+    </div>
+    <div class="doc-section">
+      <h2>8. Termination</h2>
+      <p>We reserve the right to suspend or terminate accounts that violate these Terms, engage in fraudulent activity, or abuse the rewards system. You may delete your account at any time by contacting support.</p>
+    </div>
+    <div class="doc-section">
+      <h2>9. Limitation of Liability</h2>
+      <p>LiveFit is provided "as is" without warranties of any kind. We are not liable for any direct or indirect damages arising from your use of the Service, including loss of data or health outcomes.</p>
+    </div>
+    <div class="doc-section">
+      <h2>10. Contact</h2>
+      <p>For questions about these terms, contact us at <a href="mailto:nutrition.livefit@gmail.com" style="color:#00e5ff;">nutrition.livefit@gmail.com</a>.</p>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="footer-content">
+    <div class="footer-section"><h4>LiveFit</h4><p>Your personal nutrition and fitness companion.</p></div>
+    <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="features.html">Features</a></li><li><a href="pricing.html">Pricing</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+    <div class="footer-section"><h4>Support</h4><ul><li><a href="help.html">Help Center</a></li><li><a href="https://mail.google.com/mail/?view=cm&fs=1&to=nutrition.livefit@gmail.com" target="_blank">Contact Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li></ul></div>
+    <div class="footer-section"><h4>Connect With Us</h4><div class="social-links"><a href="https://www.facebook.com/profile.php?id=61584737936696" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a><a href="https://www.instagram.com/livefit_nutritionapp/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.youtube.com/@LiveFitNutrition-d2i" class="social-link" target="_blank"><i class="fab fa-youtube"></i></a></div></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2025 LiveFit. All rights reserved.</p></div>
+</footer>
+<script>(function(){const t=localStorage.getItem("authToken"),u=localStorage.getItem("username");if(t){document.getElementById("loginLink").style.display="none";document.getElementById("logoutBtn").style.display="inline-block";document.getElementById("welcomeUser").textContent="👋 "+u;document.getElementById("welcomeUser").style.display="inline-block";document.getElementById("coinsBox").style.display="inline-block";fetch("/api/coins",{headers:{"Authorization":"Bearer "+t}}).then(r=>r.json()).then(d=>document.getElementById("coinsDisplay").textContent=d.coins||0).catch(()=>{});}})();function logout(){localStorage.removeItem("authToken");localStorage.removeItem("username");window.location.href="index.html";}</script>
+</body>
+</html>
