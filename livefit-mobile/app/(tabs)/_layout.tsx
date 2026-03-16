@@ -1,13 +1,15 @@
 // app/(tabs)/_layout.tsx
 import { Tabs } from "expo-router";
-import { Text } from "react-native";
+import { Text, Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// Simple emoji icon component — no extra libraries needed
 const Icon = (emoji: string, focused: boolean) => (
   <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.5 }}>{emoji}</Text>
 );
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -16,74 +18,51 @@ export default function TabLayout() {
           backgroundColor: "#0a1525",
           borderTopColor: "#1a3a5c",
           borderTopWidth: 1,
-          height: 62,
-          paddingBottom: 8,
-          paddingTop: 6
+          // Add bottom safe area inset so icons aren't cut by the Android nav bar
+          height: 62 + insets.bottom,
+          paddingBottom: insets.bottom + 6,
+          paddingTop: 6,
         },
         tabBarActiveTintColor:   "#00e5ff",
         tabBarInactiveTintColor: "#5a7a9a",
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: "700",
-          letterSpacing: 0.3
+          letterSpacing: 0.3,
         }
       }}
     >
       <Tabs.Screen
         name="dashboard"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ focused }) => Icon("🏠", focused)
-        }}
+        options={{ title: "Home",    tabBarIcon: ({ focused }) => Icon("🏠", focused) }}
       />
       <Tabs.Screen
         name="addfood"
-        options={{
-          title: "Log",
-          tabBarIcon: ({ focused }) => Icon("➕", focused)
-        }}
+        options={{ title: "Log",     tabBarIcon: ({ focused }) => Icon("➕", focused) }}
       />
       <Tabs.Screen
         name="meals"
-        options={{
-          title: "Meals",
-          tabBarIcon: ({ focused }) => Icon("🍱", focused)
-        }}
+        options={{ title: "Meals",   tabBarIcon: ({ focused }) => Icon("🍱", focused) }}
       />
       <Tabs.Screen
         name="cart"
-        options={{
-          title: "Cart",
-          tabBarIcon: ({ focused }) => Icon("🛒", focused)
-        }}
+        options={{ title: "Cart",    tabBarIcon: ({ focused }) => Icon("🛒", focused) }}
       />
       <Tabs.Screen
         name="chat"
-        options={{
-          title: "AI Chat",
-          tabBarIcon: ({ focused }) => Icon("🤖", focused)
-        }}
+        options={{ title: "AI Chat", tabBarIcon: ({ focused }) => Icon("🤖", focused) }}
       />
       <Tabs.Screen
         name="redeem"
-        options={{
-          title: "Rewards",
-          tabBarIcon: ({ focused }) => Icon("🎁", focused)
-        }}
+        options={{ title: "Rewards", tabBarIcon: ({ focused }) => Icon("🎁", focused) }}
       />
       <Tabs.Screen
         name="subscription"
-        options={{
-          title: "Pro",
-          tabBarIcon: ({ focused }) => Icon("⭐", focused)
-        }}
+        options={{ title: "Pro",     tabBarIcon: ({ focused }) => Icon("⭐", focused) }}
       />
       <Tabs.Screen
         name="orders"
-        options={{
-          title: "Orders",
-          tabBarIcon: ({ focused }) => Icon("📦", focused)
-        }}
+        options={{ title: "Orders",  tabBarIcon: ({ focused }) => Icon("📦", focused) }}
       />
     </Tabs>
   );
