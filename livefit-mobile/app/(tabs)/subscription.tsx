@@ -80,7 +80,7 @@ export default function Subscription() {
 
   return (
 
-    <ScrollView style={globalStyles.container}>
+    <ScrollView style={globalStyles.scrollView} contentContainerStyle={globalStyles.scrollContent} showsVerticalScrollIndicator={false}>
 
       <Text style={globalStyles.title}>Subscription Plans</Text>
 

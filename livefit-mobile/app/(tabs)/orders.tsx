@@ -1,18 +1,11 @@
 // app/(tabs)/orders.tsx
-// Orders shows your meal order history + invoice download.
-// The invoice PDF is generated server-side when you place an order.
-import {
-  View, Text, FlatList, TouchableOpacity,
-  Alert, Linking
-} from "react-native";
-import { useCallback } from "react";
-import { useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, Alert, Linking } from "react-native";
+import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import API from "../../src/services/api";
 import { globalStyles } from "../../src/theme/styles";
 import { colors } from "../../src/theme/colors";
 
-// Derive base URL from the axios instance so invoice link always matches
 const BASE_URL = (API.defaults.baseURL || "").replace(/\/$/, "");
 
 type OrderItem = { mealId: { name: string; price: number }; quantity: number };
@@ -32,36 +25,27 @@ export default function Orders() {
     }
   };
 
-  const openInvoice = (orderId: string) => {
-    const url = `${BASE_URL}/invoices/invoice-${orderId}.pdf`;
-    Linking.openURL(url);
-  };
-
   if (orders.length === 0) {
     return (
       <View style={[globalStyles.container, { justifyContent: "center", alignItems: "center" }]}>
         <Text style={{ fontSize: 48, marginBottom: 16 }}>📦</Text>
         <Text style={{ color: colors.text, fontSize: 18, fontWeight: "700" }}>No orders yet</Text>
-        <Text style={{ color: colors.muted, marginTop: 8 }}>
-          Order meals from the Meals tab
-        </Text>
+        <Text style={{ color: colors.muted, marginTop: 8 }}>Order meals from the Meals tab</Text>
       </View>
     );
   }
 
   return (
-    <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Order History</Text>
-
+    <View style={[globalStyles.container, { paddingHorizontal: 0 }]}>
+      <Text style={[globalStyles.title, { paddingHorizontal: 18 }]}>Order History</Text>
       <FlatList
         data={orders}
         keyExtractor={item => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 30 }}
+        // paddingBottom clears the tab bar
+        contentContainerStyle={{ paddingHorizontal: 18, paddingBottom: 100 }}
         renderItem={({ item }) => (
           <View style={globalStyles.card}>
-
-            {/* Header row */}
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 12 }}>
               <View style={{
                 backgroundColor: "#0d2b1f", borderRadius: 8,
@@ -79,7 +63,6 @@ export default function Orders() {
               </Text>
             </View>
 
-            {/* Items */}
             {item.items?.map((i, idx) => (
               <View key={idx} style={{
                 flexDirection: "row", justifyContent: "space-between",
@@ -94,13 +77,12 @@ export default function Orders() {
               </View>
             ))}
 
-            {/* Total + Invoice */}
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 14, alignItems: "center" }}>
               <Text style={{ color: colors.text, fontSize: 18, fontWeight: "900" }}>
                 ₹{item.totalPrice}
               </Text>
               <TouchableOpacity
-                onPress={() => openInvoice(item._id)}
+                onPress={() => Linking.openURL(`${BASE_URL}/invoices/invoice-${item._id}.pdf`)}
                 style={{
                   backgroundColor: "#0d1f33", borderWidth: 1,
                   borderColor: colors.primary, borderRadius: 20,
@@ -112,7 +94,6 @@ export default function Orders() {
                 </Text>
               </TouchableOpacity>
             </View>
-
           </View>
         )}
       />

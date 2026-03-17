@@ -1,22 +1,41 @@
-// src/theme/styles.ts
-import { StyleSheet } from "react-native";
+// src/theme/styles.js
+import { StyleSheet, Platform } from "react-native";
 import { colors } from "./colors";
 
+// Bottom padding so content clears the tab bar
+const TAB_BAR_HEIGHT = Platform.OS === "android" ? 90 : 100;
+
 export const globalStyles = StyleSheet.create({
+  // For View-based screens (non-scrollable)
   container: {
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: 18,
     paddingTop: 52,
   },
+
+  // Goes on the style prop of ScrollView (background + flex only)
+  scrollView: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+
+  // Goes on contentContainerStyle of ScrollView (padding + bottom clearance)
+  scrollContent: {
+    paddingHorizontal: 18,
+    paddingTop: 52,
+    paddingBottom: TAB_BAR_HEIGHT,
+    flexGrow: 1,
+  },
+
   title: {
-    fontFamily: "System",
     fontSize: 26,
     fontWeight: "800",
     color: colors.text,
     marginBottom: 20,
     letterSpacing: 0.5,
   },
+
   card: {
     backgroundColor: colors.card,
     borderRadius: 16,
@@ -30,6 +49,7 @@ export const globalStyles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+
   input: {
     backgroundColor: "#0d1f33",
     borderWidth: 1,
@@ -40,6 +60,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 12,
   },
+
   button: {
     backgroundColor: colors.primary,
     borderRadius: 12,
@@ -47,12 +68,14 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     marginTop: 4,
   },
+
   buttonText: {
     color: "#000",
     fontWeight: "700",
     fontSize: 15,
     letterSpacing: 0.3,
   },
+
   buttonOutline: {
     backgroundColor: "transparent",
     borderRadius: 12,
@@ -62,11 +85,13 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
   },
+
   buttonOutlineText: {
     color: colors.primary,
     fontWeight: "700",
     fontSize: 15,
   },
+
   sectionLabel: {
     color: colors.muted,
     fontSize: 11,

@@ -46,17 +46,18 @@ export default function Dashboard() {
     } catch (e) { console.log(e); }
   }, []);
 
-  useFocusEffect(() => {
-    loadAll();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      loadAll();
+    }, [])
+  );
 
   const grouped = {
     Breakfast: foods.filter(f => f.mealType === "Breakfast"),
     Lunch:     foods.filter(f => f.mealType === "Lunch"),
-    Dinner:    foods.filter(f => f.mealType === "Dinner")
+    Dinner:    foods.filter(f => f.mealType === "Dinner"),
   };
 
-  // Chart: must be > 0 to render bars — pad with 0.1 if all zero so chart doesn't crash
   const chartValues = [totals.calories, totals.protein, totals.carbs, totals.fats];
   const chartData = {
     labels: ["Cal", "Protein", "Carbs", "Fats"],
@@ -66,13 +67,18 @@ export default function Dashboard() {
   };
 
   return (
-    <ScrollView style={globalStyles.container} showsVerticalScrollIndicator={false}>
-
+    // style= background only, contentContainerStyle= padding + bottom clearance
+    <ScrollView
+      style={globalStyles.scrollView}
+      contentContainerStyle={globalStyles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Top bar */}
       <View style={{
         flexDirection: "row", justifyContent: "space-between",
         alignItems: "center", marginBottom: 20, flexWrap: "wrap", gap: 8
       }}>
+        {/* Coins */}
         <View style={{
           flexDirection: "row", alignItems: "center",
           backgroundColor: colors.card, borderWidth: 1, borderColor: colors.cardBorder,
@@ -84,6 +90,7 @@ export default function Dashboard() {
           </Text>
         </View>
 
+        {/* Plan badge */}
         <View style={{
           backgroundColor: plan ? colors.primary + "25" : colors.card,
           borderWidth: 1, borderColor: plan ? colors.primary : colors.cardBorder,
@@ -94,6 +101,7 @@ export default function Dashboard() {
           </Text>
         </View>
 
+        {/* Logout */}
         <TouchableOpacity
           onPress={logout}
           style={{
@@ -107,7 +115,7 @@ export default function Dashboard() {
 
       <Text style={globalStyles.title}>Today's Nutrition</Text>
 
-      {/* ── BAR CHART ── explicit rgba colors so it's always visible ── */}
+      {/* Chart */}
       <View style={{
         backgroundColor: colors.card, borderRadius: 16, marginBottom: 20,
         overflow: "hidden", borderWidth: 1, borderColor: colors.cardBorder
@@ -116,40 +124,34 @@ export default function Dashboard() {
           data={chartData}
           width={screenWidth - 36}
           height={200}
-          yAxisLabel=""
-          yAxisSuffix=""
+          yAxisLabel="" yAxisSuffix=""
           fromZero
+          showValuesOnTopOfBars
           chartConfig={{
-            backgroundColor:             "#0f1e35",
-            backgroundGradientFrom:      "#0f1e35",
-            backgroundGradientTo:        "#0f1e35",
-            decimalPlaces:               0,
-            // ↓ explicit rgba — this is why the bars were invisible before
+            backgroundColor:        "#0f1e35",
+            backgroundGradientFrom: "#0f1e35",
+            backgroundGradientTo:   "#0f1e35",
+            decimalPlaces: 0,
             color:      (opacity = 1) => `rgba(0, 229, 255, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(226, 240, 255, ${opacity})`,
-            style:      { borderRadius: 16 },
             barPercentage: 0.6,
-            propsForBackgroundLines: {
-              stroke: "rgba(26, 58, 92, 0.8)"
-            }
+            propsForBackgroundLines: { stroke: "rgba(26, 58, 92, 0.8)" }
           }}
           style={{ borderRadius: 16 }}
-          showValuesOnTopOfBars
         />
       </View>
 
       {/* Stat cards */}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10, marginBottom: 20 }}>
         {[
-          { label: "Calories", value: totals.calories, goal: 2000, unit: "" ,  emoji: "🔥" },
-          { label: "Protein",  value: totals.protein,  goal: 120,  unit: "g",  emoji: "💪" },
-          { label: "Carbs",    value: totals.carbs,    goal: 300,  unit: "g",  emoji: "🍚" },
-          { label: "Fats",     value: totals.fats,     goal: 90,   unit: "g",  emoji: "🥑" }
+          { label: "Calories", value: totals.calories, goal: 2000, unit: "", emoji: "🔥" },
+          { label: "Protein",  value: totals.protein,  goal: 120,  unit: "g", emoji: "💪" },
+          { label: "Carbs",    value: totals.carbs,    goal: 300,  unit: "g", emoji: "🍚" },
+          { label: "Fats",     value: totals.fats,     goal: 90,   unit: "g", emoji: "🥑" }
         ].map(s => (
           <View key={s.label} style={{
             flex: 1, minWidth: "44%", backgroundColor: colors.card,
-            borderRadius: 14, padding: 14,
-            borderWidth: 1, borderColor: colors.cardBorder
+            borderRadius: 14, padding: 14, borderWidth: 1, borderColor: colors.cardBorder
           }}>
             <Text style={{ fontSize: 20, marginBottom: 4 }}>{s.emoji}</Text>
             <Text style={{ color: colors.muted, fontSize: 11, letterSpacing: 1 }}>
@@ -171,7 +173,7 @@ export default function Dashboard() {
         ))}
       </View>
 
-      {/* Meals */}
+      {/* Meal breakdown */}
       {(["Breakfast", "Lunch", "Dinner"] as const).map(type => (
         <View key={type} style={globalStyles.card}>
           <Text style={{ color: colors.primary, fontSize: 16, fontWeight: "800", marginBottom: 8 }}>
