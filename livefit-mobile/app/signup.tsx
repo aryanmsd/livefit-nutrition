@@ -8,6 +8,23 @@ import { router } from "expo-router";
 import authService from "../src/services/authService";
 import { colors } from "../src/theme/colors";
 
+// ✅ Moved outside Signup so React doesn't remount it on every keystroke
+const Field = ({ label, ...props }: any) => (
+  <View style={{ marginBottom: 16 }}>
+    <Text style={{ color: colors.muted, fontSize: 12, letterSpacing: 1.5, marginBottom: 6 }}>
+      {label}
+    </Text>
+    <TextInput
+      style={{
+        backgroundColor: "#070d1a", borderWidth: 1, borderColor: "#1a3a5c",
+        borderRadius: 12, padding: 14, color: colors.text, fontSize: 15
+      }}
+      placeholderTextColor={colors.muted}
+      {...props}
+    />
+  </View>
+);
+
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail]       = useState("");
@@ -27,22 +44,6 @@ export default function Signup() {
       setLoading(false);
     }
   };
-
-  const Field = ({ label, ...props }: any) => (
-    <View style={{ marginBottom: 16 }}>
-      <Text style={{ color: colors.muted, fontSize: 12, letterSpacing: 1.5, marginBottom: 6 }}>
-        {label}
-      </Text>
-      <TextInput
-        style={{
-          backgroundColor: "#070d1a", borderWidth: 1, borderColor: "#1a3a5c",
-          borderRadius: 12, padding: 14, color: colors.text, fontSize: 15
-        }}
-        placeholderTextColor={colors.muted}
-        {...props}
-      />
-    </View>
-  );
 
   return (
     <KeyboardAvoidingView
