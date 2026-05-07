@@ -248,6 +248,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-⭐ If you find this project helpful, please give it a star!
+⭐ If you find this project helpful, please give it a star!!!!!
 
 **Made with ❤️ for healthy living**
