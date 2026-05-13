@@ -5,8 +5,8 @@ const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
 
@@ -23,27 +23,7 @@ app.use("/invoices", express.static("invoices"));
 app.get("/wake", (req, res) => res.status(200).send("Server awake"));
 
 // ===== Email =====
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 465,
-  secure: true,
 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000
-});
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("❌ Email transporter error:", error.message);
-  } else {
-    console.log("✅ Email transporter ready");
-  }
-});
 // ===== MongoDB =====
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => { console.log("✅ MongoDB connected"); await seedMeals(); })
@@ -219,19 +199,52 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     console.log("📧 Sending reset email to:", email);
     console.log("🔗 Reset link:", resetLink);
 
-    await transporter.sendMail({
-      from: `"LiveFit" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "LiveFit Password Reset",
-      html: `
-        <h2>LiveFit Password Reset</h2>
-        <p>Click the link below to reset your password. It expires in 15 minutes.</p>
-        <a href="${resetLink}" style="padding:10px 20px;background:#05d9e8;color:#000;text-decoration:none;border-radius:5px;">
-          Reset Password
-        </a>
-        <p>Or copy this link: ${resetLink}</p>
-      `
-    });
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "LiveFit",
+          email: process.env.EMAIL_USER
+        },
+    
+        to: [
+          {
+            email: email
+          }
+        ],
+    
+        subject: "LiveFit Password Reset",
+    
+        htmlContent: `
+          <h2>LiveFit Password Reset</h2>
+    
+          <p>Click below to reset your password:</p>
+    
+          <a href="${resetLink}"
+             style="
+               padding:10px 20px;
+               background:#05d9e8;
+               color:#000;
+               text-decoration:none;
+               border-radius:5px;
+             ">
+             Reset Password
+          </a>
+    
+          <p>This link expires in 15 minutes.</p>
+    
+          <p>${resetLink}</p>
+        `
+      },
+    
+      {
+        headers: {
+          accept: "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+          "content-type": "application/json"
+        }
+      }
+    );
 
     console.log("✅ Reset email sent successfully");
     res.json({ message: "Password reset link sent." });
