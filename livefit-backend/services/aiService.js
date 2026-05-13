@@ -1,21 +1,14 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const Groq = require("groq-sdk");
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 async function askAI(message, username = "User", nutrition = {}) {
   try {
-    const model = genAI.getGenerativeModel({
-      model: "models/gemini-2.5-flash"
-    });
-
-    // Default nutrition values (safe fallback)
     const calories = nutrition.calories || 0;
     const protein = nutrition.protein || 0;
     const carbs = nutrition.carbs || 0;
     const fats = nutrition.fats || 0;
 
-    const prompt = `
-You are LiveFit AI, a personal nutrition and fitness assistant.
+    const prompt = `You are LiveFit AI, a personal nutrition and fitness assistant.
 
 User name: ${username}
 
@@ -38,14 +31,17 @@ Rules:
 - Be concise and friendly
 - DO NOT give medical diagnoses
 
-User question:
-${message}
-`;
+User question: ${message}`;
 
-    const result = await model.generateContent(prompt);
-    return result.response.text();
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [{ role: "user", content: prompt }],
+      max_tokens: 1024
+    });
+
+    return completion.choices[0].message.content;
   } catch (err) {
-    console.error("❌ Gemini AI error:", err.message);
+    console.error("❌ Groq AI error:", err.message);
     return "⚠️ LiveFit AI is temporarily unavailable. Please try again later.";
   }
 }
