@@ -255,17 +255,40 @@ app.post("/api/auth/forgot-password", async (req, res) => {
 });
 
 app.post("/api/auth/reset-password", async (req, res) => {
+  console.log("RESET ROUTE HIT");
+
   try {
     const { token, password } = req.body;
-    const user = await User.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
-    if (!user) return res.status(400).json({ error: "Invalid or expired token" });
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        error: "Invalid or expired token"
+      });
+    }
+
     user.password = await bcrypt.hash(password, 10);
+
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+
     await user.save();
-    res.json({ message: "Password reset successful" });
-  } catch {
-    res.status(500).json({ error: "Reset failed" });
+
+    res.json({
+      message: "Password reset successful"
+    });
+
+  } catch (err) {
+
+    console.error("RESET ERROR:", err);
+
+    res.status(500).json({
+      error: "Reset failed"
+    });
   }
 });
 
