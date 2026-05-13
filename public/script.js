@@ -716,7 +716,12 @@ sendResetLinkBtn.addEventListener("click", async () => {
   });
 
   const data = await res.json();
-  alert(data.message);
+  if (!res.ok) {
+    alert(data.error || "Failed to send reset link");
+    return;
+  }
+  
+  alert(data.message || "Reset link sent successfully");
 
   // Return to login after sending
   backToLogin.click();
