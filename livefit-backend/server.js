@@ -27,7 +27,13 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
 });
-
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Email transporter error:", error.message);
+  } else {
+    console.log("✅ Email transporter ready");
+  }
+});
 // ===== MongoDB =====
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => { console.log("✅ MongoDB connected"); await seedMeals(); })
@@ -187,20 +193,41 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// AFTER (with proper error logging)
 app.post("/api/auth/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.json({ message: "If the email exists, a reset link has been sent." });
+
     const token = crypto.randomBytes(32).toString("hex");
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
     await user.save();
+
     const resetLink = `${process.env.FRONTEND_URL}/reset-password.html?token=${token}`;
-    await transporter.sendMail({ to: email, subject: "LiveFit Password Reset", html: `<p>Reset link: <a href="${resetLink}">${resetLink}</a></p>` });
+    console.log("📧 Sending reset email to:", email);
+    console.log("🔗 Reset link:", resetLink);
+
+    await transporter.sendMail({
+      from: `"LiveFit" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "LiveFit Password Reset",
+      html: `
+        <h2>LiveFit Password Reset</h2>
+        <p>Click the link below to reset your password. It expires in 15 minutes.</p>
+        <a href="${resetLink}" style="padding:10px 20px;background:#05d9e8;color:#000;text-decoration:none;border-radius:5px;">
+          Reset Password
+        </a>
+        <p>Or copy this link: ${resetLink}</p>
+      `
+    });
+
+    console.log("✅ Reset email sent successfully");
     res.json({ message: "Password reset link sent." });
-  } catch {
-    res.status(500).json({ error: "Failed to send reset email" });
+  } catch (err) {
+    console.error("❌ Forgot password error:", err);   // <-- NOW YOU CAN SEE THE ACTUAL ERROR
+    res.status(500).json({ error: "Failed to send reset email: " + err.message });
   }
 });
 
