@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
       
-        const res = await fetch("/chat", {
+        const res = await fetch("https://livefit-backend.onrender.com/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
