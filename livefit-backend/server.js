@@ -195,7 +195,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
     await user.save();
 
-    const resetLink = `${process.env.FRONTEND_URL}/passwordreset.html?token=${token}`;
+    const resetLink = `${process.env.FRONTEND_URL.replace(/\/$/, '')}/passwordreset.html?token=${token}`;
     console.log("📧 Sending reset email to:", email);
     console.log("🔗 Reset link:", resetLink);
 
