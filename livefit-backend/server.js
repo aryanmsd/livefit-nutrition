@@ -540,7 +540,9 @@ app.use('/api', apiRoutes);
 
 // ===== Static Frontend =====
 app.use(express.static(path.join(__dirname, '../public')));
-app.get('/reset-password.html', (req, res) => res.sendFile(path.join(__dirname, '../public', 'passwordreset.html')));
+app.get('/passwordreset.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'passwordreset.html'));
+});
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api')) res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
