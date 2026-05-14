@@ -1,7 +1,4 @@
 fastapi
 uvicorn
-transformers
-torch
-torchvision
-pillow
+httpx
 python-multipart
