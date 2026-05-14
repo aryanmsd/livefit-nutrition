@@ -16,7 +16,7 @@ app = FastAPI()
 
 # Better general food classifier
 # Handles pizza, burger, pasta, sushi, steak, etc.
-GENERAL_MODEL_NAME = "dima806/food-image-classification"
+GENERAL_MODEL_NAME = "nateraw/food"
 
 # Specialized Indian food classifier
 INDIAN_MODEL_NAME = "rajistics/finetuned-indian-food"
