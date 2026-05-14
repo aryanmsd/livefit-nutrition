@@ -3,6 +3,11 @@ const FormData = require("form-data");
 
 const PYTHON_CLASSIFIER_URL = process.env.PYTHON_CLASSIFIER_URL || "http://127.0.0.1:5001";
 
+// ============================================================
+// These keywords determine whether to trust the Indian model.
+// Keep this list TIGHT — only use it to decide routing,
+// NOT to gate whether a result is returned at all.
+// ============================================================
 const INDIAN_KEYWORDS = [
   "biryani", "dosa", "idli", "samosa", "paneer", "curry", "roti", "naan",
   "pav bhaji", "chole", "vada", "uttapam", "poha", "halwa", "kheer",
@@ -64,23 +69,28 @@ async function classifyWithRoboflow(buffer) {
 async function classifyImage(buffer) {
   console.log("🚀 Starting hybrid classification...");
 
-  // Step 1: Try Python service (uses HF Inference API internally)
+  // Step 1: Try Python service
   const pyResult = await classifyWithPython(buffer);
 
-  if (pyResult) {
+  if (pyResult && pyResult.label) {
     console.log("🔍 Python classifier result:", pyResult);
 
-    // Non-Indian food with good confidence → go straight to USDA
-    if (!isIndianLabel(pyResult.label) && pyResult.confidence >= 0.5) {
+    // ✅ FIX: Non-Indian food → ALWAYS return immediately.
+    // Do NOT gate on confidence. Low-confidence pizza is still pizza,
+    // not biryani. The USDA search will handle ambiguous labels.
+    if (!isIndianLabel(pyResult.label)) {
       console.log("✅ Non-Indian food detected:", pyResult.label);
       return [pyResult];
     }
 
-    // Indian food with good confidence → use IFCT
+    // Indian food with good confidence → return it
     if (isIndianLabel(pyResult.label) && pyResult.confidence >= 0.65) {
       console.log("✅ Indian food detected:", pyResult.label);
       return [pyResult];
     }
+
+    // Indian label but low confidence → try Roboflow before trusting it
+    console.log("⚠️ Indian label but low confidence, trying Roboflow...");
   }
 
   // Step 2: Fallback to Roboflow
@@ -91,6 +101,7 @@ async function classifyImage(buffer) {
     return [rfResult];
   }
 
+  // Step 3: Return whatever we have, even if low confidence
   if (rfResult) return [rfResult];
   if (pyResult) return [pyResult];
 
