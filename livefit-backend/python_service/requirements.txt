@@ -1,4 +1,9 @@
 fastapi
 uvicorn
-httpx
+transformers
+torch
+torchvision
+pillow
 python-multipart
+sentencepiece
+safetensors
