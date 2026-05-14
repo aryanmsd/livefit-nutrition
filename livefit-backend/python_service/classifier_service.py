@@ -14,15 +14,26 @@ app = FastAPI()
 # MODELS
 # ============================================
 
-# Better general food classifier
-# Handles pizza, burger, pasta, sushi, steak, etc.
 GENERAL_MODEL_NAME = "nateraw/food"
-
-# Specialized Indian food classifier
 INDIAN_MODEL_NAME = "rajistics/finetuned-indian-food"
 
 # ============================================
 # INDIAN FOOD KEYWORDS
+# ============================================
+#
+# FIX: "curry" removed from this list.
+#
+# The Food101 dataset (used by nateraw/food)
+# has a class called "curry" that includes
+# non-Indian dishes like Japanese curry and
+# Thai curry. Matching on "curry" alone caused
+# pizza/pasta/burger to be misrouted to the
+# Indian model when the general model was
+# uncertain and fell back to a curry-like label.
+#
+# Instead, use only SPECIFIC Indian dish names
+# that cannot be confused with global dishes.
+#
 # ============================================
 
 INDIAN_KEYWORDS = [
@@ -31,7 +42,6 @@ INDIAN_KEYWORDS = [
     "idli",
     "samosa",
     "paneer",
-    "curry",
     "roti",
     "naan",
     "pav bhaji",
@@ -97,10 +107,13 @@ print("✅ Both models loaded successfully!\n")
 
 def is_indian_food(label: str) -> bool:
     """
-    Detect whether a predicted label
-    appears to be Indian food.
-    """
+    Detect whether a predicted label appears to be
+    a specifically Indian food.
 
+    Uses exact word/phrase matching to avoid
+    false positives like "curry" matching
+    non-Indian dishes.
+    """
     if not label:
         return False
 
@@ -113,10 +126,7 @@ def is_indian_food(label: str) -> bool:
 
 
 def clean_label(label: str) -> str:
-    """
-    Normalize labels.
-    """
-
+    """Normalize labels."""
     if not label:
         return ""
 
@@ -128,9 +138,7 @@ def clean_label(label: str) -> str:
 
 
 def run_model(processor, model, image):
-    """
-    Run inference using HuggingFace model.
-    """
+    """Run inference using HuggingFace model."""
 
     inputs = processor(
         images=image,
@@ -167,9 +175,7 @@ def run_model(processor, model, image):
 
 @app.get("/wake")
 def wake():
-    return {
-        "status": "awake"
-    }
+    return {"status": "awake"}
 
 
 @app.post("/classify")
@@ -192,8 +198,7 @@ async def classify(file: UploadFile = File(...)):
         ).convert("RGB")
 
         # ====================================
-        # STEP 1:
-        # GENERAL FOOD MODEL
+        # STEP 1: GENERAL FOOD MODEL
         # ====================================
 
         general_label, general_conf = run_model(
@@ -208,26 +213,21 @@ async def classify(file: UploadFile = File(...)):
         )
 
         # ====================================
-        # STEP 2:
-        # NON-INDIAN FOOD
-        # RETURN IMMEDIATELY
-        # ====================================
+        # STEP 2: NON-INDIAN FOOD
+        # RETURN IMMEDIATELY — always.
         #
-        # IMPORTANT FIX:
-        #
-        # LOW CONFIDENCE DOES NOT MEAN
-        # INDIAN FOOD.
-        #
-        # Pizza with 0.42 confidence
-        # should STILL remain pizza.
-        #
+        # FIX: Do NOT check confidence here.
+        # A pizza at 0.30 confidence is still
+        # pizza, not biryani. The USDA lookup
+        # downstream handles uncertainty far
+        # better than the Indian classifier.
         # ====================================
 
         if not is_indian_food(general_label):
 
             print(
                 f"✅ Non-Indian food detected: "
-                f"{general_label}"
+                f"{general_label} (conf: {general_conf})"
             )
 
             return {
@@ -237,17 +237,11 @@ async def classify(file: UploadFile = File(...)):
             }
 
         # ====================================
-        # STEP 3:
-        # POSSIBLE INDIAN FOOD
+        # STEP 3: POSSIBLE INDIAN FOOD
         # ====================================
 
-        print(
-            "🇮🇳 Possible Indian food detected"
-        )
-
-        print(
-            "🇮🇳 Running Indian classifier..."
-        )
+        print("🇮🇳 Possible Indian food detected")
+        print("🇮🇳 Running Indian classifier...")
 
         indian_label, indian_conf = run_model(
             indian_processor,
@@ -261,8 +255,7 @@ async def classify(file: UploadFile = File(...)):
         )
 
         # ====================================
-        # STEP 4:
-        # USE INDIAN RESULT
+        # STEP 4: USE INDIAN RESULT
         # ONLY IF CONFIDENT
         # ====================================
 
@@ -280,17 +273,11 @@ async def classify(file: UploadFile = File(...)):
             }
 
         # ====================================
-        # STEP 5:
-        # FALLBACK TO GENERAL MODEL
+        # STEP 5: FALLBACK TO GENERAL MODEL
         # ====================================
 
-        print(
-            "⚠️ Indian confidence too low"
-        )
-
-        print(
-            "➡️ Falling back to general model"
-        )
+        print("⚠️ Indian confidence too low")
+        print("➡️ Falling back to general model")
 
         return {
             "label": general_label,
@@ -305,9 +292,7 @@ async def classify(file: UploadFile = File(...)):
 
         return JSONResponse(
             status_code=500,
-            content={
-                "error": str(e)
-            }
+            content={"error": str(e)}
         )
 
 # ============================================
