@@ -1,12 +1,24 @@
 const axios = require("axios");
 const FormData = require("form-data");
 
+const PYTHON_CLASSIFIER_URL = process.env.PYTHON_CLASSIFIER_URL || "http://127.0.0.1:5001";
+
+const INDIAN_KEYWORDS = [
+  "biryani", "dosa", "idli", "samosa", "paneer", "curry", "roti", "naan",
+  "pav bhaji", "chole", "vada", "uttapam", "poha", "halwa", "kheer",
+  "gulab jamun", "jalebi", "paratha", "dal", "tikka", "korma", "pakora"
+];
+
+function isIndianLabel(label) {
+  return INDIAN_KEYWORDS.some(k => label.toLowerCase().includes(k));
+}
+
 async function classifyWithPython(buffer) {
   try {
     const form = new FormData();
     form.append("file", buffer, { filename: "upload.jpg" });
     const response = await axios.post(
-      "http://127.0.0.1:5001/classify",
+      `${PYTHON_CLASSIFIER_URL}/classify`,
       form,
       { headers: form.getHeaders(), timeout: 30000 }
     );
@@ -52,21 +64,29 @@ async function classifyWithRoboflow(buffer) {
 async function classifyImage(buffer) {
   console.log("🚀 Starting hybrid classification...");
 
+  // Step 1: Try Python service (uses HF Inference API internally)
   const pyResult = await classifyWithPython(buffer);
 
   if (pyResult) {
-    console.log("🔍 Local model result:", pyResult);
+    console.log("🔍 Python classifier result:", pyResult);
 
-    if (pyResult.confidence >= 0.75) {
-      console.log("✅ High confidence Indian classification:", pyResult);
+    // Non-Indian food with good confidence → go straight to USDA
+    if (!isIndianLabel(pyResult.label) && pyResult.confidence >= 0.5) {
+      console.log("✅ Non-Indian food detected:", pyResult.label);
       return [pyResult];
     }
 
-    console.log("⚠️ Low confidence, probably not Indian food → trying Roboflow...");
+    // Indian food with good confidence → use IFCT
+    if (isIndianLabel(pyResult.label) && pyResult.confidence >= 0.65) {
+      console.log("✅ Indian food detected:", pyResult.label);
+      return [pyResult];
+    }
   }
 
+  // Step 2: Fallback to Roboflow
+  console.log("⚠️ Falling back to Roboflow...");
   const rfResult = await classifyWithRoboflow(buffer);
-  if (rfResult && rfResult.confidence >= 0.4) {
+  if (rfResult && rfResult.confidence >= 0.5) {
     console.log("✅ Roboflow result:", rfResult);
     return [rfResult];
   }
