@@ -1,85 +1,65 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from transformers import AutoImageProcessor, AutoModelForImageClassification
-from PIL import Image
-import torch
-import io
+import httpx
+import os
 
 app = FastAPI()
 
-# General food classifier (Food101 - knows pizza, burger, pasta, sushi etc.)
-GENERAL_MODEL_NAME = "nateraw/food"
-# Indian food classifier
-INDIAN_MODEL_NAME = "rajistics/finetuned-indian-food"
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+GENERAL_MODEL = "nateraw/food"
+INDIAN_MODEL = "rajistics/finetuned-indian-food"
 
 INDIAN_KEYWORDS = [
     "biryani", "dosa", "idli", "samosa", "paneer", "curry", "roti", "naan",
     "pav bhaji", "chole", "vada", "uttapam", "poha", "halwa", "kheer",
-    "gulab jamun", "jalebi", "paratha", "dal", "tikka", "korma", "pakora",
-    "rasgulla", "laddu", "barfi", "khichdi", "upma", "puri", "bhaji"
+    "gulab jamun", "jalebi", "paratha", "dal", "tikka", "korma", "pakora"
 ]
 
-print(f"🔄 Loading general model {GENERAL_MODEL_NAME}...")
-general_processor = AutoImageProcessor.from_pretrained(GENERAL_MODEL_NAME)
-general_model = AutoModelForImageClassification.from_pretrained(GENERAL_MODEL_NAME)
+def is_indian(label: str) -> bool:
+    return any(k in label.lower() for k in INDIAN_KEYWORDS)
 
-print(f"🔄 Loading Indian model {INDIAN_MODEL_NAME}...")
-indian_processor = AutoImageProcessor.from_pretrained(INDIAN_MODEL_NAME)
-indian_model = AutoModelForImageClassification.from_pretrained(INDIAN_MODEL_NAME)
+async def query_hf(model: str, image_bytes: bytes):
+    url = f"https://api-inference.huggingface.co/models/{model}"
+    headers = {"Authorization": f"Bearer {HF_TOKEN}"} if HF_TOKEN else {}
+    async with httpx.AsyncClient(timeout=30) as client:
+        response = await client.post(url, content=image_bytes, headers=headers)
+        response.raise_for_status()
+        return response.json()
 
-print("✅ Both models loaded!")
-
-
-def is_indian_food(label: str) -> bool:
-    label_lower = label.lower()
-    return any(keyword in label_lower for keyword in INDIAN_KEYWORDS)
-
-
-def run_model(processor, model, image):
-    inputs = processor(images=image, return_tensors="pt")
-    with torch.no_grad():
-        outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=-1)[0]
-    top_prob, top_idx = torch.max(probs, dim=0)
-    label = model.config.id2label[int(top_idx)]
-    confidence = round(float(top_prob), 4)
-    return label, confidence
-
+@app.get("/wake")
+def wake():
+    return {"status": "awake"}
 
 @app.post("/classify")
 async def classify(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-        # Step 1: Run general model first
-        general_label, general_conf = run_model(general_processor, general_model, image)
-        print(f"🌍 General model: {general_label} ({general_conf})")
+        # Step 1: General model first
+        general_results = await query_hf(GENERAL_MODEL, contents)
+        if general_results and len(general_results) > 0:
+            top = general_results[0]
+            label = top["label"]
+            confidence = round(top["score"], 4)
+            print(f"🌍 General model: {label} ({confidence})")
 
-        # Step 2: If general model is confident it's NOT Indian → return immediately
-        if general_conf >= 0.5 and not is_indian_food(general_label):
-            print(f"✅ Non-Indian food detected: {general_label}")
-            return { "label": general_label, "confidence": general_conf }
+            # Not Indian → return immediately, will go to USDA
+            if confidence >= 0.5 and not is_indian(label):
+                print(f"✅ Non-Indian food: {label}")
+                return {"label": label, "confidence": confidence}
 
-        # Step 3: Looks Indian or general model unsure → run Indian model
-        indian_label, indian_conf = run_model(indian_processor, indian_model, image)
-        print(f"🇮🇳 Indian model: {indian_label} ({indian_conf})")
+        # Step 2: Looks Indian → refine with Indian model
+        indian_results = await query_hf(INDIAN_MODEL, contents)
+        if indian_results and len(indian_results) > 0:
+            top = indian_results[0]
+            label = top["label"]
+            confidence = round(top["score"], 4)
+            print(f"🇮🇳 Indian model: {label} ({confidence})")
+            return {"label": label, "confidence": confidence}
 
-        # Step 4: Indian model confident → use it
-        if indian_conf >= 0.65:
-            print(f"✅ Indian food confirmed: {indian_label}")
-            return { "label": indian_label, "confidence": indian_conf }
-
-        # Step 5: Both uncertain → trust whichever is more confident
-        if general_conf >= indian_conf:
-            print(f"✅ Using general model (more confident): {general_label}")
-            return { "label": general_label, "confidence": general_conf }
-        else:
-            return { "label": indian_label, "confidence": indian_conf }
+        return JSONResponse(status_code=400, content={"error": "Could not classify"})
 
     except Exception as e:
         print("❌ Classifier error:", e)
         return JSONResponse(status_code=500, content={"error": str(e)})
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=5001)
