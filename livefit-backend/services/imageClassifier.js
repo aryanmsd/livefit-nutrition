@@ -1,7 +1,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
 
-const PYTHON_CLASSIFIER_URL = process.env.PYTHON_CLASSIFIER_URL || "http://127.0.0.1:5001";
+const PYTHON_CLASSIFIER_URL = process.env.PYTHON_CLASSIFIER_URL;
 
 // ============================================================
 // These keywords determine whether to trust the Indian model.
