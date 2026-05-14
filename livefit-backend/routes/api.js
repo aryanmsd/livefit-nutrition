@@ -6,6 +6,7 @@ const upload = require("../middleware/upload");
 const usda = require("../services/usda");
 const ifct = require("../services/ifct");
 const imageClassifier = require("../services/imageClassifier");
+console.log("imageClassifier module:", imageClassifier);
 const { mapToIFCT, isIndianFood } = require("../services/indianAliases");
 
 router.post("/identify", upload.single("image"), async (req, res) => {
