@@ -8,7 +8,13 @@
 
 LIVEFIT is a smart calorie and nutrition tracker that simplifies healthy living. Log meals by dish and quantity or upload a photo, and LIVEFIT instantly calculates calories and nutrients. With AI insights, daily tracking, and personalized goals, it keeps you consistent and helps you reach your fitness milestones.
 
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=aryanmsd&layout=compact)
+## 🛠 Languages Used
+
+![HTML](https://img.shields.io/badge/HTML-38.9%25-orange)
+![JavaScript](https://img.shields.io/badge/JavaScript-25.8%25-yellow)
+![TypeScript](https://img.shields.io/badge/TypeScript-25.5%25-blue)
+![CSS](https://img.shields.io/badge/CSS-8.2%25-purple)
+![Python](https://img.shields.io/badge/Python-1.6%25-green)
 
 ## ✨ Features
 
